@@ -1,0 +1,127 @@
+<Window x:Class="MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Honda"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="NavbarMenuStyle" TargetType="Menu">
+            <Setter Property="Background" Value="#F8FAFC" />
+            <Setter Property="BorderBrush" Value="#E2E8F0" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="Padding" Value="10,5" />
+        </Style>
+
+        <Style TargetType="MenuItem">
+            <Setter Property="Padding" Value="15,8" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="#475569" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Grid>
+                            <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="#E2E8F0" BorderThickness="1" Margin="2,0" CornerRadius="2">
+                                <ContentPresenter x:Name="HeaderHost" ContentSource="Header" Margin="{TemplateBinding Padding}" VerticalAlignment="Center"/>
+                            </Border>
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsSubmenuOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
+                                <Border Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="4" Margin="0,2,0,5">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity="0.1"/>
+                                    </Border.Effect>
+                                    <ItemsPresenter />
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="White" />
+                                <Setter Property="Foreground" Value="#1E293B" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#CBD5E1" />
+                            </Trigger>
+                            <Trigger Property="IsSubmenuOpen" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="White" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#3B82F6" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SubmenuItemStyle" TargetType="MenuItem">
+            <Setter Property="Padding" Value="12,6" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="#475569" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border x:Name="border" Background="White" Padding="10,5">
+                            <ContentPresenter ContentSource="Header" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F1F5F9" />
+                                <Setter Property="Foreground" Value="#1E293B" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel Background="#F1F5F9">
+        <Grid DockPanel.Dock="Top" Background="#F8FAFC">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Border BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Grid.ColumnSpan="2"/>
+
+            <Menu Grid.Column="0" Style="{StaticResource NavbarMenuStyle}" BorderThickness="0">
+                <MenuItem Header="Database" Click="DatabaseMenu_Click"/>
+                <MenuItem Header="Interchangeability" Click="InterchangeableMenu_Click" />
+                <MenuItem Header="Calibration" Click="CalibrationMenu_Click" />
+                <MenuItem Header="Inventory management" Click="InventoryManagementMenu_Click" />
+                <MenuItem Header="Settings" Click="SettingsMenu_Click" />
+                <MenuItem Header="Records" Click="RecordsMenu_Click" />
+                <MenuItem Header="System Settings">
+                    <MenuItem Header="User settings" Style="{StaticResource SubmenuItemStyle}" Click="UserSettings_Click" />
+                    <MenuItem Header="Database settings" Style="{StaticResource SubmenuItemStyle}" Click="DatabaseSettings_Click" />
+                    <MenuItem Header="RFID Scanner" Style="{StaticResource SubmenuItemStyle}" Click="RFIDScanner_Click" />
+                </MenuItem>
+            </Menu>
+
+            <!-- Right Part: User Profile Section -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,15,0">
+                <!-- User Icon -->
+                <TextBlock Text="👤" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="#64748B"/>
+
+                <!-- Username Label -->
+                <TextBlock x:Name="LblCurrentUsername" Text="Guest" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="#1E293B" Margin="0,0,15,0"/>
+
+                <!-- Logout Button -->
+                <Button x:Name="BtnLogout" Click="BtnLogout_Click" Background="Transparent" BorderThickness="0" Cursor="Hand" ToolTip="Logout">
+                    <TextBlock Text="⏻" FontSize="18" Foreground="#EF4444" FontWeight="Bold"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- Permanent Company Footer -->
+        <Border DockPanel.Dock="Bottom" Background="#0F172A" Padding="20,10">
+            <Grid>
+                <TextBlock Text="Copyright © 2026 RDL Technologies Pvt Ltd - All Rights Reserved" 
+                           Foreground="White" FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                <TextBlock Text="©www.rdltech.in" 
+                           Foreground="White" FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Background="Transparent" />
+    </DockPanel>
+</Window>

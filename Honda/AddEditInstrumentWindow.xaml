@@ -1,0 +1,165 @@
+<Window x:Class="AddEditInstrumentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Instrument Details" Height="650" Width="900"
+        WindowStartupLocation="CenterOwner"
+        Background="#F3F4F6">
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Width" Value="150" />
+            <Setter Property="Foreground" Value="#475569" />
+        </Style>
+        
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Width" Value="250" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Setter Property="BorderBrush" Value="#CBD5E1" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#3B82F6" />
+                                <Setter Property="BorderThickness" Value="2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Width" Value="250" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Setter Property="BorderBrush" Value="#CBD5E1" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Column 1 -->
+            <StackPanel Grid.Column="0">
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Instrument Name" />
+                    <TextBox x:Name="TxtName" LostFocus="TxtName_LostFocus" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Location" />
+                    <ComboBox x:Name="ComboSection" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Control No." />
+                    <TextBox x:Name="TxtControlNo" IsReadOnly="True" Background="#E5E7EB" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Model No." />
+                    <TextBox x:Name="TxtModel" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Maker Name" />
+                    <TextBox x:Name="TxtMaker" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Request No." />
+                    <TextBox x:Name="TxtRequestNo" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Remark" />
+                    <TextBox x:Name="TxtRemark" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5" Visibility="Collapsed">
+                    <Label Content="RFID Tag No." />
+                    <Grid Width="250">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="TxtRFID" Margin="0" Width="210" />
+                        <Button x:Name="BtnScanRFID" Grid.Column="1" Content="📡" Width="30" Height="30" Click="BtnScanRFID_Click" Background="White" BorderBrush="#D1D5DB" />
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Column 2 -->
+            <StackPanel Grid.Column="1">
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Instrument Description" />
+                    <TextBox x:Name="TxtDescription" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Size" />
+                    <ComboBox x:Name="ComboSize" SelectionChanged="ComboSize_SelectionChanged" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Line" />
+                    <TextBox x:Name="TxtLine" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Color" />
+                    <ComboBox x:Name="ComboColor">
+                        <ComboBoxItem Content="Green" />
+                        <ComboBoxItem Content="Yellow" />
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="DD / MM / YY" />
+                    <DatePicker x:Name="DatePickerDate" Width="250" Height="34" Margin="5" VerticalContentAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Asset No." />
+                    <TextBox x:Name="TxtAsset" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Upload File" />
+                    <Grid Width="250">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="TxtFileName" Margin="0" Width="180" IsReadOnly="True" Background="#F1F5F9" />
+                        <Button x:Name="BtnUpload" Grid.Column="1" Content="Choose File" Width="65" Height="30" Click="BtnUpload_Click" Background="#E2E8F0" FontSize="11" />
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <!-- Footer -->
+        <Button x:Name="BtnSave" Grid.Row="1" Content="Add" Width="150" Height="40" 
+                Background="#0263E0" Foreground="White" FontWeight="Bold" 
+                HorizontalAlignment="Center" Margin="0,20,0,0" Click="BtnSave_Click" />
+    </Grid>
+</Window>

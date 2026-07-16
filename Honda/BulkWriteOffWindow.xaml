@@ -1,0 +1,192 @@
+<Window x:Class="BulkWriteOffWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Bulk Write Off" Height="700" Width="900" 
+        WindowStartupLocation="CenterScreen" Background="#F8FAFC">
+    <Window.Resources>
+        <Style x:Key="HeaderLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Setter Property="Margin" Value="0,0,0,20" />
+        </Style>
+
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#64748B" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Padding" Value="8,4" />
+        </Style>
+
+        <Style x:Key="ActionBtn" TargetType="Button">
+            <Setter Property="Height" Value="38" />
+            <Setter Property="Padding" Value="24,0" />
+            <Setter Property="MinWidth" Value="100" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" CornerRadius="8" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.85" />
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.02" ScaleY="1.02" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.7" />
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.98" ScaleY="0.98" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#E2E8F0" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#E2E8F0" />
+                                <Setter Property="Foreground" Value="#94A3B8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RemoveBtn" TargetType="Button" BasedOn="{StaticResource ActionBtn}">
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="MinWidth" Value="80" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Background" Value="#FEE2E2" />
+            <Setter Property="BorderBrush" Value="#FECACA" />
+            <Setter Property="Foreground" Value="#DC2626" />
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="30" Background="Transparent" MouseDown="RootGrid_MouseDown">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /> <!-- Header -->
+            <RowDefinition Height="Auto" /> <!-- Filters -->
+            <RowDefinition Height="*" />    <!-- Grid of Control Nos -->
+            <RowDefinition Height="Auto" /> <!-- Remark & Upload -->
+            <RowDefinition Height="Auto" /> <!-- Footer Actions -->
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="Bulk Write Off" Style="{StaticResource HeaderLabel}" />
+
+        <!-- Search & Meta Section -->
+        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,20" BorderBrush="#E2E8F0" BorderThickness="1">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                    <Label Content="Control Number" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#64748B" FontSize="14" FontWeight="SemiBold"/>
+                    <TextBox x:Name="TxtSearchControlNo" Width="220" Height="34" VerticalContentAlignment="Center" Padding="8,0" Margin="0,0,12,0" 
+                             BorderBrush="#CBD5E1" Foreground="#1E293B" FontSize="14" BorderThickness="1"/>
+                    <Button Content="🔍 Search" Style="{StaticResource ActionBtn}" Click="BtnSearch_Click" Width="110" Margin="0,0,10,0" 
+                            Background="White" BorderBrush="#CBD5E1" Foreground="#475569"/>
+                    <Button x:Name="BtnAdd" Content="➕ Add" Style="{StaticResource ActionBtn}" Click="BtnAdd_Click" Width="110" 
+                            Background="#3B82F6" BorderBrush="#3B82F6" Foreground="White" IsEnabled="False"/>
+                </StackPanel>
+                <Border Background="#F8FAFC" CornerRadius="6" Padding="12,8">
+                    <TextBlock x:Name="TxtItemMeta" Text="Enter a control number and press search..." 
+                               FontSize="14" Foreground="#64748B" FontWeight="Medium"/>
+                </Border>
+            </StackPanel>
+        </Border>
+
+
+        <!-- Added Items DataGrid -->
+        <Border Grid.Row="2" Background="White" CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1" Padding="0">
+            <DataGrid x:Name="GridAddedItems" 
+                      AutoGenerateColumns="False" 
+                      IsReadOnly="True" 
+                      BorderThickness="0" 
+                      Background="Transparent"
+                      RowHeight="40"
+                      ColumnHeaderHeight="45"
+                      GridLinesVisibility="Horizontal"
+                      HorizontalGridLinesBrush="#F1F5F9"
+                      CanUserAddRows="False">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#F8FAFC" />
+                        <Setter Property="Foreground" Value="#64748B" />
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                        <Setter Property="Padding" Value="16,0" />
+                        <Setter Property="BorderThickness" Value="0,0,0,1" />
+                        <Setter Property="BorderBrush" Value="#E2E8F0" />
+                    </Style>
+                    <Style TargetType="TextBlock" x:Key="CellText">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Padding" Value="16,0" />
+                        <Setter Property="FontSize" Value="14" />
+                        <Setter Property="Foreground" Value="#1E293B" />
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Control No" Binding="{Binding ControlNo}" Width="150" ElementStyle="{StaticResource CellText}" />
+                    <DataGridTextColumn Header="Instrument Name" Binding="{Binding InstrumentName}" Width="*" ElementStyle="{StaticResource CellText}" />
+                    <DataGridTextColumn Header="Department" Binding="{Binding Department}" Width="150" ElementStyle="{StaticResource CellText}" />
+                    <DataGridTextColumn Header="Color" Binding="{Binding Color}" Width="100" ElementStyle="{StaticResource CellText}" />
+                    <DataGridTemplateColumn Width="150">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Remove" Click="BtnRemoveItem_Click" Style="{StaticResource RemoveBtn}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+
+
+        <!-- Bottom: Remark & Upload -->
+        <Grid Grid.Row="3" Margin="0,20,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="350" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,0,30,0">
+                <Label Content="Remark / Reason for Write Off" />
+                <TextBox x:Name="TxtRemark" Height="80" TextWrapping="Wrap" AcceptsReturn="True" 
+                         Padding="8" BorderBrush="#CBD5E1" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1">
+                <Label Content="Upload Document (Required)" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="TxtFileName" IsReadOnly="True" Height="34" VerticalContentAlignment="Center" Padding="8,0" Background="#F1F5F9" />
+                    <Button Grid.Column="1" Content="Browse" Click="BtnBrowse_Click" Margin="8,0,0,0"
+                            Style="{StaticResource ActionBtn}" Background="White" BorderBrush="#CBD5E1" Foreground="#475569" />
+                </Grid>
+                <TextBlock x:Name="lblSelectionCount" Text="Items Selected: 0" Margin="0,15,0,0" FontWeight="SemiBold" Foreground="#3B82F6" />
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="BtnCancel" Content="Cancel" Click="BtnCancel_Click" MinWidth="120"
+                    Style="{StaticResource ActionBtn}" Background="#F1F5F9" BorderBrush="#CBD5E1" Foreground="#475569" Margin="0,0,12,0" />
+            <Button x:Name="BtnSubmit" Content="Process Bulk Write Off" Click="BtnSubmit_Click" IsEnabled="False" MinWidth="180"
+                    Style="{StaticResource ActionBtn}" Background="#EF4444" BorderBrush="#EF4444" Foreground="White" />
+        </StackPanel>
+    </Grid>
+</Window>

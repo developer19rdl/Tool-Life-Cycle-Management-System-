@@ -1,0 +1,829 @@
+<Page x:Class="SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="1000"
+      Title="Settings"
+      Background="#F1F5F9"
+      UseLayoutRounding="True"
+      TextOptions.TextFormattingMode="Display">
+
+    <Page.Resources>
+        <Style x:Key="TabButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#64748B" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="30,12" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,0,12,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6,6,0,0" 
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True"
+                                x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E2E8F0" />
+                                <Setter Property="Foreground" Value="#1E293B" />
+                            </Trigger>
+                            <Trigger Property="Tag" Value="Selected">
+                                <Setter TargetName="border" Property="Background" Value="#0263E0" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#475569" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="BorderBrush" Value="#E2E8F0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="8" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F8FAFC" />
+                                <Setter Property="BorderBrush" Value="#CBD5E1" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F1F5F9" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
+            <Setter Property="Background" Value="#3B82F6" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Shared DataGrid Styles -->
+        <Style x:Key="SettingsDataGridStyle" TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="RowHeight" Value="40" />
+            <Setter Property="ColumnHeaderHeight" Value="45" />
+            <Setter Property="GridLinesVisibility" Value="Horizontal" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#F1F5F9" />
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F8FAFC" />
+            <Setter Property="Foreground" Value="#64748B" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="16,0" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="BorderBrush" Value="#E2E8F0" />
+        </Style>
+
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="White" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F1F5F9" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="24" Background="Transparent" MouseDown="RootGrid_MouseDown">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /> <!-- Title -->
+            <RowDefinition Height="Auto" /> <!-- Tabs -->
+            <RowDefinition Height="*" />    <!-- Content -->
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Settings" FontSize="28" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,24" />
+
+        <!-- Tab Header -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button Content="Types" Style="{StaticResource TabButtonStyle}" Tag="Selected" Name="BtnTypes" />
+            <Button Content="Dept" Style="{StaticResource TabButtonStyle}" Name="BtnDept" />
+            <Button Content="Instrument Sizes" Style="{StaticResource TabButtonStyle}" Name="BtnSizes" />
+            <Button Content="Gauge Sizes" Style="{StaticResource TabButtonStyle}" Name="BtnGaugeSizes" />
+            <Button Content="Calibration Mapping" Style="{StaticResource TabButtonStyle}" Name="BtnCalibrationMapping" />
+            <Button Content="Calibration Master Types" Style="{StaticResource TabButtonStyle}" Name="BtnCalibMaster" />
+            <Button Content="GroupSets" Style="{StaticResource TabButtonStyle}" Name="BtnGroupSets" />
+            <Button Content="Groups" Style="{StaticResource TabButtonStyle}" Name="BtnGroups" />
+            <Button Content="Admin" Style="{StaticResource TabButtonStyle}" Name="BtnAdmin" />
+        </StackPanel>
+
+        <!-- Content Area -->
+        <Border Grid.Row="2" Background="White" CornerRadius="0,12,12,12" BorderBrush="#E2E8F0" BorderThickness="1" SnapsToDevicePixels="True">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.03" />
+            </Border.Effect>
+            <Grid x:Name="SettingsContentArea" Margin="20">
+                <!-- Shared Progress Bar (shown during import) -->
+                <ProgressBar x:Name="SettingsProgressBar" Height="8" VerticalAlignment="Top" Margin="0,0,0,0"
+                             Foreground="#3B82F6" Background="#E2E8F0"
+                             Visibility="Collapsed" Panel.ZIndex="99" />
+                <!-- Types Tab View -->
+                <Grid x:Name="TypesTabView" Visibility="Visible">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Types" FontSize="20" FontWeight="Bold" Foreground="#1E293B" />
+                                <TextBlock Text="Define Gauge / Instrument types for masterlists &amp; control number rules." Foreground="#64748B" FontSize="13" Margin="0,4,0,0" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Button Content="➕ Add" Style="{StaticResource PrimaryButtonStyle}" Width="100" x:Name="BtnAddType" Click="BtnAddType_Click" />
+                                <Button Content="✏️ Edit" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnEditType" Click="BtnEditType_Click" />
+                                <Button Content="🗑️ Delete" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnDeleteType" Click="BtnDeleteType_Click" />
+                                <Button Content="📥 Download" Style="{StaticResource ActionButtonStyle}" Width="110" x:Name="BtnDownloadTypes" Click="BtnDownloadTypes_Click" />
+                                <Button Content="📤 Import" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnImportTypes" Click="BtnImportTypes_Click" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" x:Name="TypesDataGrid" Style="{StaticResource SettingsDataGridStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="150" />
+                            <DataGridTextColumn Header="Type Name" Binding="{Binding TypeName}" Width="250" />
+                            <DataGridTextColumn Header="Prefix Mode" Binding="{Binding PrefixMode}" Width="150" />
+                            <DataGridTextColumn Header="Base Prefix" Binding="{Binding BasePrefix}" Width="150" />
+                            <DataGridTextColumn Header="Digits" Binding="{Binding SerialDigits}" Width="100" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <!-- Dept Tab View -->
+                <Grid x:Name="DeptTabView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Departments" FontSize="20" FontWeight="Bold" Foreground="#1E293B" />
+                                <TextBlock Text="Manage departments for personnel and instrument allocation." Foreground="#64748B" FontSize="13" Margin="0,4,0,0" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Content="📥 Download" Style="{StaticResource ActionButtonStyle}" Width="110" x:Name="BtnDownloadDept" Click="BtnDownloadDept_Click" />
+                                <Button Content="📤 Import" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnImportDept" Click="BtnImportDept_Click" />
+                            </StackPanel>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtDeptName" Tag="Enter department name..." Padding="12,8" Grid.Column="0" Margin="0,0,12,0" Height="40" VerticalContentAlignment="Center" BorderBrush="#CBD5E1" BorderThickness="1" />
+                            <Button Content="➕ Add Department" Style="{StaticResource PrimaryButtonStyle}" Width="180" x:Name="BtnAddDept" Click="BtnAddDept_Click" Grid.Column="1" Height="40" />
+                        </Grid>
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" x:Name="DeptDataGrid" Style="{StaticResource SettingsDataGridStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Department Name" Binding="{Binding DepartmentName}" Width="*" />
+                            <DataGridTemplateColumn Header="Action" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="🗑️" 
+                                                Width="32" Height="32"
+                                                Background="Transparent" BorderThickness="0"
+                                                Foreground="#EF4444" FontSize="16"
+                                                ToolTip="Delete Department"
+                                                Click="BtnDeleteDept_Click" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <!-- Instrument Sizes Tab View -->
+                <Grid x:Name="SizesTabView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Instrument Sizes" FontSize="20" FontWeight="Bold" Foreground="#1E293B" />
+                                <TextBlock Text="Configure Size → GroupCode mapping for instrument ControlNo auto-generation." Foreground="#64748B" FontSize="13" Margin="0,4,0,0" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Button Content="➕ Add" Style="{StaticResource PrimaryButtonStyle}" Width="100" x:Name="BtnAddSize" Click="BtnAddSize_Click" />
+                                <Button Content="✏️ Edit" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnEditSize" Click="BtnEditSize_Click" />
+                                <Button Content="🗑️ Delete" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnDeleteSize" Click="BtnDeleteSize_Click" />
+                                <Button Content="📥 Download" Style="{StaticResource ActionButtonStyle}" Width="110" x:Name="BtnDownloadSizes" Click="BtnDownloadSizes_Click" />
+                                <Button Content="📤 Import" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnImportSizes" Click="BtnImportSizes_Click" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" x:Name="SizesDataGrid" Style="{StaticResource SettingsDataGridStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Instrument Type" Binding="{Binding InstrumentType}" Width="200" />
+                            <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="150" />
+                            <DataGridTextColumn Header="GroupCode" Binding="{Binding GroupCode}" Width="150" />
+                            <DataGridCheckBoxColumn Header="Active" Binding="{Binding Active}" Width="100" />
+                            <DataGridTextColumn Header="Sort" Binding="{Binding Sort}" Width="100" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <!-- Gauge Sizes Tab View -->
+                <Grid x:Name="GaugeSizesTabView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Gauge Sizes" FontSize="20" FontWeight="Bold" Foreground="#1E293B" />
+                                <TextBlock Text="Configure Size → GroupCode mapping for gauge ControlNo auto-generation." Foreground="#64748B" FontSize="13" Margin="0,4,0,0" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Button Content="➕ Add" Style="{StaticResource PrimaryButtonStyle}" Width="100" x:Name="BtnAddGaugeSize" Click="BtnAddGaugeSize_Click" />
+                                <Button Content="✏️ Edit" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnEditGaugeSize" Click="BtnEditGaugeSize_Click" />
+                                <Button Content="🗑️ Delete" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnDeleteGaugeSize" Click="BtnDeleteGaugeSize_Click" />
+                                <Button Content="📥 Download" Style="{StaticResource ActionButtonStyle}" Width="110" x:Name="BtnDownloadGaugeSizes" Click="BtnDownloadGaugeSizes_Click" />
+                                <Button Content="📤 Import" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnImportGaugeSizes" Click="BtnImportGaugeSizes_Click" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" x:Name="GaugeSizesDataGrid" Style="{StaticResource SettingsDataGridStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Gauge Type" Binding="{Binding InstrumentType}" Width="200" />
+                            <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="150" />
+                            <DataGridTextColumn Header="GroupCode" Binding="{Binding GroupCode}" Width="150" />
+                            <DataGridCheckBoxColumn Header="Active" Binding="{Binding Active}" Width="100" />
+                            <DataGridTextColumn Header="Sort" Binding="{Binding Sort}" Width="100" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <!-- Calibration Mapping Tab View -->
+                <Grid x:Name="CalibrationMappingTabView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Calibration Mapping" FontSize="20" FontWeight="Bold" Foreground="#1E293B" />
+                                <TextBlock Text="Map instrument types/categories to calibration prefixes and ranges." Foreground="#64748B" FontSize="13" Margin="0,4,0,0" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Button Content="➕ Add" Style="{StaticResource PrimaryButtonStyle}" Width="100" x:Name="BtnAddMapping" Click="BtnAddMapping_Click" />
+                                <Button Content="✏️ Edit" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnEditMapping" Click="BtnEditMapping_Click" />
+                                <Button Content="🗑️ Delete" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnDeleteMapping" Click="BtnDeleteMapping_Click" />
+                                <Button Content="📥 Download" Style="{StaticResource ActionButtonStyle}" Width="110" x:Name="BtnDownloadMapping" Click="BtnDownloadMapping_Click" />
+                                <Button Content="📤 Import" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnImportMapping" Click="BtnImportMapping_Click" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" x:Name="CalibrationMappingDataGrid" Style="{StaticResource SettingsDataGridStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Category" Binding="{Binding category}" Width="150" />
+                            <DataGridTextColumn Header="Type Name" Binding="{Binding type_name}" Width="250" />
+                            <DataGridTextColumn Header="Prefix" Binding="{Binding prefix}" Width="150" />
+                            <DataGridTextColumn Header="Calibration Category" Binding="{Binding calibration_category}" Width="200" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <!-- Calibration Master Types Tab View -->
+                <Grid x:Name="CalibMasterTabView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Calibration Master Types" FontSize="20" FontWeight="Bold" Foreground="#1E293B" />
+                                <TextBlock Text="Manage types for calibration master instruments and gauges." Foreground="#64748B" FontSize="13" Margin="0,4,0,0" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Content="📥 Download" Style="{StaticResource ActionButtonStyle}" Width="110" x:Name="BtnDownloadCalibMaster" Click="BtnDownloadCalibMaster_Click" />
+                                <Button Content="📤 Import" Style="{StaticResource ActionButtonStyle}" Width="100" x:Name="BtnImportCalibMaster" Click="BtnImportCalibMaster_Click" />
+                            </StackPanel>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtCalibMasterName" Tag="Enter master type name..." Padding="12,8" Grid.Column="0" Margin="0,0,12,0" Height="40" VerticalContentAlignment="Center" BorderBrush="#CBD5E1" BorderThickness="1" />
+                            <Button Content="➕ Add Type" Style="{StaticResource PrimaryButtonStyle}" Width="180" x:Name="BtnAddCalibMaster" Click="BtnAddCalibMaster_Click" Grid.Column="1" Height="40" />
+                        </Grid>
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" x:Name="CalibMasterDataGrid" Style="{StaticResource SettingsDataGridStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Calibration Master Type" Binding="{Binding CalibrationMasterName}" Width="*" />
+                            <DataGridTemplateColumn Header="Action" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="🗑️" 
+                                                Width="32" Height="32"
+                                                Background="Transparent" BorderThickness="0"
+                                                Foreground="#EF4444" FontSize="16"
+                                                ToolTip="Delete Type"
+                                                Click="BtnDeleteCalibMaster_Click" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+                
+                <!-- Placeholder for truly unimplemented tabs -->
+                <TextBlock x:Name="OtherTabPlaceholder" Text="Select a settings category from the tabs above." HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#94A3B8" FontSize="16" Visibility="Collapsed" />
+
+                <!-- Admin Tab View -->
+                <ScrollViewer x:Name="AdminTabView" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,0,0,20">
+
+                        <!-- Section Header -->
+                        <StackPanel Margin="0,0,0,20">
+                            <TextBlock Text="Admin Settings" FontSize="20" FontWeight="Bold" Foreground="#1E293B" />
+                            <TextBlock Text="Manage system-level configuration for the application." Foreground="#64748B" FontSize="13" Margin="0,4,0,0" />
+                        </StackPanel>
+
+                                <!-- File Location Settings Card -->
+                                <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10" Padding="24,20" Margin="0,0,0,20">
+                                    <StackPanel>
+
+                                        <!-- Card Title -->
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                            <TextBlock Text="📁" FontSize="18" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                            <TextBlock Text="File Location Settings" FontSize="16" FontWeight="Bold" Foreground="#1E293B" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                        <TextBlock Text="Choose the root directory where all uploaded files (documents, PDFs, exports) will be stored. The application will create an organised folder structure inside this location." 
+                                                   Foreground="#64748B" FontSize="13" Margin="0,0,0,18" TextWrapping="Wrap" />
+
+                                        <!-- Current Path Row -->
+                                        <Border Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="8" Padding="16,14" Margin="0,0,0,14">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="📂" FontSize="20" VerticalAlignment="Center" Margin="0,0,12,0" />
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                    <TextBlock Text="Storage Root Directory" FontSize="13" FontWeight="SemiBold" Foreground="#1E3A8A" />
+                                                    <TextBlock x:Name="TxtFileStoragePath" Text="(Not configured — using application default directory)" 
+                                                               FontSize="12" Foreground="#3B82F6" Margin="0,3,0,0" TextWrapping="Wrap" />
+                                                </StackPanel>
+                                                <Button x:Name="BtnBrowseFileStorage" Grid.Column="2" Content="📂  Browse…"
+                                                        Height="38" Padding="14,0" Margin="12,0,8,0"
+                                                        FontSize="13" FontWeight="SemiBold"
+                                                        Background="White" Foreground="#1E3A8A" BorderBrush="#BFDBFE" BorderThickness="1"
+                                                        Cursor="Hand" Click="BtnBrowseFileStorage_Click">
+                                                    <Button.Template>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7" x:Name="bdr" Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter TargetName="bdr" Property="Background" Value="#EFF6FF"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Button.Template>
+                                                </Button>
+                                                <Button x:Name="BtnClearFileStorage" Grid.Column="3" Content="✕  Clear"
+                                                        Height="38" Padding="12,0"
+                                                        FontSize="13" FontWeight="SemiBold"
+                                                        Background="White" Foreground="#EF4444" BorderBrush="#FECACA" BorderThickness="1"
+                                                        Cursor="Hand" Click="BtnClearFileStorage_Click">
+                                                    <Button.Template>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7" x:Name="bdr2" Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter TargetName="bdr2" Property="Background" Value="#FEF2F2"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Button.Template>
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+
+                                        <!-- Folder Structure Preview -->
+                                        <Border Background="#F0FDF4" BorderBrush="#BBF7D0" BorderThickness="1" CornerRadius="8" Padding="16,12" Margin="0,0,0,16">
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                    <TextBlock Text="🗂️" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                                    <TextBlock Text="Folder structure that will be created:" FontSize="12" FontWeight="SemiBold" Foreground="#166534" />
+                                                </StackPanel>
+                                                <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#15803D" LineHeight="18">
+                                                    <Run Text="📁 Tool Life Cycle Management System Files" FontWeight="Bold"/><LineBreak/>
+                                                    <Run Text="  ├─ 📁 Database"/><LineBreak/>
+                                                    <Run Text="  │    ├─ 📁 Instrument"/><LineBreak/>
+                                                    <Run Text="  │    └─ 📁 Gauge"/><LineBreak/>
+                                                    <Run Text="  ├─ 📁 Interchangeability"/><LineBreak/>
+                                                    <Run Text="  │    ├─ 📁 Reintroduction"/><LineBreak/>
+                                                    <Run Text="  │    ├─ 📁 WriteOff"/><LineBreak/>
+                                                    <Run Text="  │    └─ 📁 TempIssuance"/><LineBreak/>
+                                                    <Run Text="  ├─ 📁 Calibration"/><LineBreak/>
+                                                    <Run Text="  │    ├─ 📁 Reports"/><LineBreak/>
+                                                    <Run Text="  │    └─ 📁 Masters"/><LineBreak/>
+                                                    <Run Text="  ├─ 📁 Inventory"/><LineBreak/>
+                                                    <Run Text="  │    └─ 📁 Documents"/><LineBreak/>
+                                                    <Run Text="  └─ 📁 Records"/><LineBreak/>
+                                                    <Run Text="       └─ 📁 Exports"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- Info note -->
+                                        <Border Background="#FFF7ED" BorderBrush="#FED7AA" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,0,0,16">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="ℹ️" FontSize="14" VerticalAlignment="Top" Margin="0,1,8,0" />
+                                                <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="#92400E">
+                                                    <Run FontWeight="SemiBold">Note:</Run>
+                                                    <Run> Existing files are NOT moved when you change this location. New uploads will be saved to the newly selected folder. If no folder is selected the application directory is used.</Run>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- Save Button -->
+                                        <StackPanel HorizontalAlignment="Right">
+                                            <Button x:Name="BtnSaveFileLocation" Content="💾  Save &amp; Create Folders"
+                                                    Height="42" Padding="24,0"
+                                                    FontSize="14" FontWeight="SemiBold"
+                                                    Background="#3B82F6" Foreground="White" BorderThickness="0"
+                                                    Cursor="Hand" Click="BtnSaveFileLocation_Click">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}" CornerRadius="8" x:Name="bdrSave" Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="bdrSave" Property="Background" Value="#2563EB"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+                                        </StackPanel>
+
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Cycle Timing Settings Card -->
+
+                        <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10" Padding="24,20" Margin="0,0,0,20">
+                            <StackPanel>
+
+                                <!-- Card Title -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                    <TextBlock Text="🔄" FontSize="18" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                    <TextBlock Text="Cycle Timing Settings" FontSize="16" FontWeight="Bold" Foreground="#1E293B" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <TextBlock Text="Define the date ranges for each cycle colour. The system will automatically determine the active cycle based on today's date." Foreground="#64748B" FontSize="13" Margin="0,0,0,20" TextWrapping="Wrap" />
+
+                                <!-- Start Colour Row -->
+                                <Border Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="8" Padding="16,12" Margin="0,0,0,16">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="220" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="🎨" FontSize="18" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="Start Cycle Colour (after Reset All)" FontSize="13" FontWeight="SemiBold" Foreground="#1E3A8A" />
+                                            <TextBlock Text="When a full reset is performed, the new cycle will begin with this colour." FontSize="12" Foreground="#3B82F6" Margin="0,2,0,0" TextWrapping="Wrap" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="2" Text="Colour:" FontSize="13" FontWeight="SemiBold" Foreground="#1E293B" VerticalAlignment="Center" Margin="0,0,12,0" />
+                                        <ComboBox x:Name="CboStartColor" Grid.Column="3" Height="38" FontSize="13" BorderBrush="#CBD5E1" BorderThickness="1" VerticalContentAlignment="Center" Padding="10,0">
+                                            <ComboBoxItem Content="🟢  Green" Tag="Green" />
+                                            <ComboBoxItem Content="🟡  Yellow" Tag="Yellow" />
+                                        </ComboBox>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Original Cycle Reference Note -->
+                                <Border Background="#F1F5F9" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="7" Padding="14,10" Margin="0,0,0,14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="📌" FontSize="15" VerticalAlignment="Top" Margin="0,1,10,0" />
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Original Cycle Definition (Honda Standard)" FontSize="12" FontWeight="SemiBold" Foreground="#374151" Margin="0,0,0,6" />
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <!-- Green original -->
+                                                <Border Grid.Column="0" Background="#DCFCE7" BorderBrush="#86EFAC" BorderThickness="1" CornerRadius="5" Padding="10,7" Margin="0,0,6,0">
+                                                    <StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                                            <TextBlock Text="🟢" FontSize="13" Margin="0,0,5,0" />
+                                                            <TextBlock Text="Green Cycle" FontSize="12" FontWeight="SemiBold" Foreground="#166534" />
+                                                        </StackPanel>
+                                                        <TextBlock Text="July 1  →  December 31" FontSize="12" Foreground="#15803D" />
+                                                        <TextBlock Text="(Jul to Dec each year)" FontSize="11" Foreground="#4ADE80" Margin="0,1,0,0" />
+                                                    </StackPanel>
+                                                </Border>
+                                                <!-- Yellow original -->
+                                                <Border Grid.Column="1" Background="#FEF9C3" BorderBrush="#FDE047" BorderThickness="1" CornerRadius="5" Padding="10,7" Margin="6,0,0,0">
+                                                    <StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                                            <TextBlock Text="🟡" FontSize="13" Margin="0,0,5,0" />
+                                                            <TextBlock Text="Yellow Cycle" FontSize="12" FontWeight="SemiBold" Foreground="#92400E" />
+                                                        </StackPanel>
+                                                        <TextBlock Text="January 1  →  June 30" FontSize="12" Foreground="#B45309" />
+                                                        <TextBlock Text="(Jan to Jun each year)" FontSize="11" Foreground="#FCD34D" Margin="0,1,0,0" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </Grid>
+                                            <TextBlock Text="Use the date pickers below to override these defaults with custom ranges." FontSize="11" Foreground="#64748B" Margin="0,7,0,0" FontStyle="Italic" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Green Cycle Row -->
+
+                                <Border Background="#F0FDF4" BorderBrush="#BBF7D0" BorderThickness="1" CornerRadius="8" Padding="16,14" Margin="0,0,0,12">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="220" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="220" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="🟢" FontSize="22" VerticalAlignment="Center" Margin="0,0,12,0" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="Green Cycle" FontSize="13" FontWeight="SemiBold" Foreground="#166534" />
+                                                <TextBlock x:Name="LblGreenCycleStatus" FontSize="11" FontWeight="Bold" Margin="8,0,0,0" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                            <TextBlock Text="Date range during which the Green cycle is active" FontSize="12" Foreground="#16A34A" Margin="0,2,0,0" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,10,0">
+                                            <TextBlock Text="Start Date" FontSize="12" FontWeight="SemiBold" Foreground="#374151" Margin="0,0,0,4" />
+                                            <DatePicker x:Name="DpGreenStart" Width="210" Height="36" BorderBrush="#A7F3D0" BorderThickness="1" FontSize="13" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="4" VerticalAlignment="Center" Margin="12,0,0,0">
+                                            <TextBlock Text="End Date" FontSize="12" FontWeight="SemiBold" Foreground="#374151" Margin="0,0,0,4" />
+                                            <DatePicker x:Name="DpGreenEnd" Width="210" Height="36" BorderBrush="#A7F3D0" BorderThickness="1" FontSize="13" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Yellow Cycle Row -->
+                                <Border Background="#FEFCE8" BorderBrush="#FDE68A" BorderThickness="1" CornerRadius="8" Padding="16,14" Margin="0,0,0,20">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="220" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="220" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="🟡" FontSize="22" VerticalAlignment="Center" Margin="0,0,12,0" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="Yellow Cycle" FontSize="13" FontWeight="SemiBold" Foreground="#92400E" />
+                                                <TextBlock x:Name="LblYellowCycleStatus" FontSize="11" FontWeight="Bold" Margin="8,0,0,0" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                            <TextBlock Text="Date range during which the Yellow cycle is active" FontSize="12" Foreground="#D97706" Margin="0,2,0,0" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,10,0">
+                                            <TextBlock Text="Start Date" FontSize="12" FontWeight="SemiBold" Foreground="#374151" Margin="0,0,0,4" />
+                                            <DatePicker x:Name="DpYellowStart" Width="210" Height="36" BorderBrush="#FDE68A" BorderThickness="1" FontSize="13" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="4" VerticalAlignment="Center" Margin="12,0,0,0">
+                                            <TextBlock Text="End Date" FontSize="12" FontWeight="SemiBold" Foreground="#374151" Margin="0,0,0,4" />
+                                            <DatePicker x:Name="DpYellowEnd" Width="210" Height="36" BorderBrush="#FDE68A" BorderThickness="1" FontSize="13" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Info Banner -->
+                                <Border Background="#FFF7ED" BorderBrush="#FED7AA" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,0,0,16">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="ℹ️" FontSize="14" VerticalAlignment="Top" Margin="0,1,8,0" />
+                                        <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="#92400E">
+                                            <Run FontWeight="SemiBold">How it works:</Run>
+                                            <Run> The system checks today's date against the configured ranges. If today falls within the Green range, the active cycle is Green; if within Yellow, it is Yellow. After a Reset All, the next cycle starts with the colour selected above.</Run>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Save Button -->
+                                <StackPanel HorizontalAlignment="Right">
+                                    <Button x:Name="BtnSaveCycleTiming" Content="💾  Save Cycle Timing Settings" 
+                                            Style="{StaticResource PrimaryButtonStyle}" 
+                                            Height="42" Padding="24,0"
+                                            Click="BtnSaveCycleTiming_Click" />
+                                </StackPanel>
+
+                            </StackPanel>
+                        </Border>
+
+                        <!-- ═══ Backup & Restore Card ═══ -->
+                        <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10" Padding="24,20" Margin="0,0,0,20">
+                            <StackPanel>
+
+                                <!-- Card Title -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                    <TextBlock Text="💾" FontSize="18" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Backup &amp; Restore" FontSize="16" FontWeight="Bold" Foreground="#1E293B" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock Text="Create a full backup of all database records and uploaded files into a single .hbak file. Use Restore to transfer data to a new PC."
+                                           Foreground="#64748B" FontSize="13" Margin="0,0,0,18" TextWrapping="Wrap"/>
+
+                                <!-- Last backup timestamp row -->
+                                <Border Background="#F0F9FF" BorderBrush="#BAE6FD" BorderThickness="1" CornerRadius="7" Padding="14,10" Margin="0,0,0,16">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="🕒" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="Last Backup" FontSize="12" FontWeight="SemiBold" Foreground="#0369A1"/>
+                                            <TextBlock x:Name="TxtLastBackup" Text="No backup created yet"
+                                                       FontSize="12" Foreground="#0284C7" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Action Buttons -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                    <!-- Create Backup -->
+                                    <Button x:Name="BtnCreateBackup" Content="💾  Create Backup"
+                                            Height="42" Padding="22,0" Margin="0,0,12,0"
+                                            FontSize="13" FontWeight="SemiBold"
+                                            Background="#16A34A" Foreground="White" BorderThickness="0"
+                                            Cursor="Hand" Click="BtnCreateBackup_Click">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="8" x:Name="bdrBk" Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="bdrBk" Property="Background" Value="#15803D"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter TargetName="bdrBk" Property="Background" Value="#86EFAC"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                    <!-- Restore Backup -->
+                                    <Button x:Name="BtnRestoreBackup" Content="📥  Restore Backup"
+                                            Height="42" Padding="22,0"
+                                            FontSize="13" FontWeight="SemiBold"
+                                            Background="#2563EB" Foreground="White" BorderThickness="0"
+                                            Cursor="Hand" Click="BtnRestoreBackup_Click">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="8" x:Name="bdrRs" Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="bdrRs" Property="Background" Value="#1D4ED8"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter TargetName="bdrRs" Property="Background" Value="#93C5FD"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </StackPanel>
+
+                                <!-- Progress Log -->
+                                <Border Background="#0F172A" BorderBrush="#334155" BorderThickness="1" CornerRadius="8" Padding="2">
+                                    <StackPanel>
+                                        <Border Background="#1E293B" CornerRadius="7,7,0,0" Padding="14,8">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse Width="10" Height="10" Fill="#EF4444" Margin="0,0,6,0"/>
+                                                <Ellipse Width="10" Height="10" Fill="#F59E0B" Margin="0,0,6,0"/>
+                                                <Ellipse Width="10" Height="10" Fill="#22C55E" Margin="0,0,12,0"/>
+                                                <TextBlock Text="Backup / Restore Log" FontSize="11" Foreground="#94A3B8" FontFamily="Consolas"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <ScrollViewer x:Name="BackupLogScroll" Height="160" VerticalScrollBarVisibility="Auto" Background="#0F172A">
+                                            <TextBox x:Name="TxtBackupLog"
+                                                     Background="Transparent" Foreground="#4ADE80"
+                                                     FontFamily="Consolas" FontSize="12"
+                                                     IsReadOnly="True" TextWrapping="Wrap"
+                                                     BorderThickness="0" Padding="14,10"
+                                                     Text="Ready. Press Create Backup or Restore Backup to begin."/>
+                                        </ScrollViewer>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Info note -->
+                                <Border Background="#FFF7ED" BorderBrush="#FED7AA" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,14,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="ℹ️" FontSize="13" VerticalAlignment="Top" Margin="0,1,8,0"/>
+                                        <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="#92400E">
+                                            <Run FontWeight="SemiBold">Note:</Run>
+                                            <Run> The .hbak file contains ALL database tables and uploaded files. To transfer to a new PC: copy the .hbak file, configure DB connection in System Settings, then click Restore. Restart the app after restoring.</Run>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

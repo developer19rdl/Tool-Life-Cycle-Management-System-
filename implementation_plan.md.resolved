@@ -1,0 +1,34 @@
+# RFID COM Port Detection Fix
+
+The application currently fails to read RFID tags on some client PCs because it auto-detects the highest COM port number. On machines with Bluetooth serial ports, these often have higher numbers than the actual USB RFID reader, causing the application to connect to the wrong port.
+
+## Proposed Changes
+
+### Configuration
+#### [MODIFY] [ProjectSettings.vb](file:///c:/Users/Administrator/OneDrive/Documents/Attendance%20Application/Honda%20Versions/V%201.2.9/Honda/Honda/ProjectSettings.vb)
+- Add `RfidPort` property to `DbSettings` class to store the user-selected COM port.
+
+### Communication Layer
+#### [MODIFY] [CommManager.vb](file:///c:/Users/Administrator/OneDrive/Documents/Attendance%20Application/Honda%20Versions/V%201.2.9/Honda/Honda/CommManager.vb)
+- Update `GetUSBSerialPorts()` to use WMI (`ManagementObjectSearcher`) to identify device descriptions and prioritize "USB Serial Port" over "Standard Serial over Bluetooth".
+- Update `ScanSingleTagThinkMagic`, `ScanSingleTagRDL`, `ScanBulkTagsRDL`, and `ScanBulkTagsThinkMagic` to check for a saved port in `ProjectSettings.Current.RfidPort` before falling back to auto-detection.
+- **Improved Logging**: Add `Console.WriteLine` or persistent logs when a port is opened/closed or when a connection fails, to help diagnose if the wrong port was chosen.
+
+#### [MODIFY] [RFIDGunClient.vb](file:///c:/Users/Administrator/OneDrive/Documents/Attendance%20Application/Honda%20Versions/V%201.2.9/Honda/Honda/RFIDGunClient.vb)
+- Add more descriptive error handling for connection refusals or 404s, clarifying that the Gun must provide an SSE stream.
+#### [MODIFY] [RFIDScannerSelectionWindow.xaml](file:///c:/Users/Administrator/OneDrive/Documents/Attendance%20Application/Honda%20Versions/V%201.2.9/Honda/Honda/RFIDScannerSelectionWindow.xaml)
+- Add a ComboBox to select the COM port.
+- Add a "Refresh" button next to the ComboBox.
+#### [MODIFY] [RFIDScannerSelectionWindow.xaml.vb](file:///c:/Users/Administrator/OneDrive/Documents/Attendance%20Application/Honda%20Versions/V%201.2.9/Honda/Honda/RFIDScannerSelectionWindow.xaml.vb)
+- Implement logic to populate the COM port ComboBox using the improved `GetUSBSerialPorts()` logic.
+- Save the selected port to `ProjectSettings`.
+
+---
+
+## Verification Plan
+
+### Manual Verification
+1.  **Check Port Discovery**: Open the RFID Scanner Configuration window and verify that `COM3` (the USB Serial Port) is correctly identified and prioritized over Bluetooth ports.
+2.  **Select Manual Port**: Manually select `COM3` from the dropdown and save.
+3.  **Test Scan**: Run a Bulk Scan in the Interchange section and verify that tags are now being read.
+4.  **IP Gun Test**: If using the RFID Gun, verify that the connection test provides a clear error if the destination IP is reachable but the service is not running.

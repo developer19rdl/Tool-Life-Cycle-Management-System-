@@ -1,0 +1,64 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>Honda</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>RDL_Logo.ico</ApplicationIcon>
+    <AssemblyName>Tool Life Cycle Management Software</AssemblyName>
+    <Product>Tool Life Cycle Management Software</Product>
+    <PackageIcon>RDL_Logo.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\rfid_usb_reader.png" />
+    <Resource Include="Assets\rfid_gun_scanner.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="RDL_Logo.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Import Include="System.Windows" />
+    <Import Include="System.Windows.Controls" />
+    <Import Include="System.Windows.Data" />
+    <Import Include="System.Windows.Documents" />
+    <Import Include="System.Windows.Input" />
+    <Import Include="System.Windows.Media" />
+    <Import Include="System.Windows.Media.Imaging" />
+    <Import Include="System.Windows.Navigation" />
+    <Import Include="System.Windows.Shapes" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\..\..\Pictures\RDL\RDL_Logo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
+    <PackageReference Include="MySql.Data" Version="9.6.0" />
+    <PackageReference Include="ClosedXML" Version="0.104.2" />
+    <PackageReference Include="ExcelDataReader" Version="3.7.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.7.0" />
+    <PackageReference Include="System.IO.Ports" Version="9.0.0" />
+    <PackageReference Include="System.Management" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MercuryAPI">
+      <HintPath>MercuryAPI.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="LLRP">
+      <HintPath>LLRP.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
+

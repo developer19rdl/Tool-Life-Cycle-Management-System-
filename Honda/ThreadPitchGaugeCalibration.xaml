@@ -1,0 +1,358 @@
+<Window x:Class="ThreadPitchGaugeCalibration"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Honda"
+        mc:Ignorable="d"
+        Title="Thread Pitch Gauge Calibration" Height="765" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="#F8FAFC"
+        FontFamily="Segoe UI, Segoe UI Variable, Arial">
+
+    <!-- Global Styles for modern look -->
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#334155" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Setter Property="BorderBrush" Value="#CBD5E1" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#3B82F6" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Setter Property="BorderBrush" Value="#CBD5E1" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#3B82F6" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6" x:Name="border" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2563EB" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1D4ED8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="GroupBox">
+            <Setter Property="BorderBrush" Value="#E2E8F0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="0,10" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupBox">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="1" Background="White" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#000000" Opacity="0.05" BlurRadius="10" ShadowDepth="2" />
+                                </Border.Effect>
+                                <ContentPresenter Margin="16" />
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="24,16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" /> <!-- Row 0: Heading -->
+                <RowDefinition Height="Auto" /> <!-- Row 1: Header Section -->
+                <RowDefinition Height="Auto" /> <!-- Row 2: Environmental Conditions -->
+                <RowDefinition Height="Auto" /> <!-- Row 3: Selected Calibration Masters -->
+                <RowDefinition Height="Auto" /> <!-- Row 4: Observations -->
+                <RowDefinition Height="Auto" /> <!-- Row 5: Bottom Section -->
+                <RowDefinition Height="Auto" /> <!-- Row 6: Save/Submit Button -->
+            </Grid.RowDefinitions>
+
+            <!-- Top Left Heading -->
+            <TextBlock Grid.Row="0" Text="Thread Pitch Gauge Calibration" FontSize="18" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,10" HorizontalAlignment="Left" />
+
+            <!-- Header and Base Details GroupBox -->
+            <GroupBox Grid.Row="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="100"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="Auto" MinWidth="120" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="Auto" MinWidth="120" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Row 0 -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Control No :" />
+                    <TextBox Grid.Row="0" Grid.Column="1" x:Name="TxtControlNo" HorizontalAlignment="Stretch" />
+
+                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Category/Control :" />
+                    <ComboBox Grid.Row="0" Grid.Column="4" x:Name="ComboCategory" HorizontalAlignment="Stretch" />
+
+                    <TextBlock Grid.Row="0" Grid.Column="6" Text="Calibration Date :" />
+                    <DatePicker Grid.Row="0" Grid.Column="7" x:Name="TxtCalibrationDate" HorizontalAlignment="Stretch" Height="34" VerticalContentAlignment="Center" />
+
+                    <!-- Row 2 -->
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Colour :" />
+                    <ComboBox Grid.Row="2" Grid.Column="1" x:Name="ComboColour" HorizontalAlignment="Stretch" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="3" Text="Location :" />
+                    <ComboBox Grid.Row="2" Grid.Column="4" x:Name="ComboLocation" HorizontalAlignment="Stretch" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="6" Text="LC :" />
+                    <ComboBox Grid.Row="2" Grid.Column="7" x:Name="ComboLC" HorizontalAlignment="Stretch" />
+
+                    <!-- Row 4 -->
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Calibration master:" />
+                    <Grid Grid.Row="4" Grid.Column="1">
+                        <Button x:Name="BtnBrowseMaster" Content="..." Width="60" Height="26" HorizontalAlignment="Left" Click="BtnBrowseMaster_Click" />
+                    </Grid>
+
+                    <TextBlock Grid.Row="4" Grid.Column="3" Text="Measuring Range:" />
+                    <TextBox Grid.Row="4" Grid.Column="4" x:Name="TxtSize" HorizontalAlignment="Stretch" />
+                </Grid>
+            </GroupBox>
+
+            <!-- Environmental Conditions GroupBox -->
+            <GroupBox Grid.Row="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="100"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="Auto" MinWidth="120" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="Auto" MinWidth="120" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="10" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Temp :" />
+                    <TextBox Grid.Row="0" Grid.Column="1" x:Name="TxtTemp" HorizontalAlignment="Stretch" />
+
+                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Humidity :" />
+                    <TextBox Grid.Row="0" Grid.Column="4" x:Name="TxtHumidity" HorizontalAlignment="Stretch" />
+
+                    <TextBlock Grid.Row="0" Grid.Column="6" Text="TMU :" />
+                    <TextBox Grid.Row="0" Grid.Column="7" x:Name="TxtTMU" IsReadOnly="True" Background="#F1F5F9" HorizontalAlignment="Stretch" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="MU :" />
+                    <TextBox Grid.Row="2" Grid.Column="1" x:Name="TxtMU" HorizontalAlignment="Stretch" ToolTip="Enter Master Uncertainty (MU) manually. TMU will be recalculated automatically." />
+                </Grid>
+            </GroupBox>
+
+            <!-- Selected Calibration Masters (Dynamic Section) -->
+            <GroupBox x:Name="MasterGroupBox" Grid.Row="3" Visibility="Collapsed" Margin="0,6">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                    <ItemsControl x:Name="ItemsControlSelectedMasters">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="4" Padding="12,6" Margin="0,0,10,6" Background="#F8FAFC">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Description}" FontWeight="SemiBold" Foreground="#1E293B" FontSize="13" />
+                                        <TextBlock Text=" | " Foreground="#64748B" Margin="6,0" />
+                                        <TextBlock Text="{Binding MasterUncertainty, StringFormat=N9}" Foreground="#0F172A" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </GroupBox>
+
+            <!-- Observations Section GroupBox -->
+            <GroupBox Grid.Row="4">
+                <StackPanel>
+                    <!-- Header Section with Title & Configure Button -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <TextBlock Text="Observations" FontSize="16" FontWeight="Bold" Foreground="#1E293B" Margin="0" />
+                            <TextBlock Text="Configure size measurements and enter observations below." FontSize="12" Foreground="#64748B" Margin="0,2,0,0" />
+                        </StackPanel>
+
+                        <Button Grid.Column="1" x:Name="BtnConfigureSizes" Content="Configure Size Measurements" Click="BtnConfigureSizes_Click" Padding="14,8" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    </Grid>
+
+                    <!-- Table Container -->
+                    <Border BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8" Padding="12" Background="White">
+                        <StackPanel>
+                            <!-- Table Headers -->
+                            <Grid x:Name="HeaderGrid" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.2*" /> <!-- Size -->
+                                    <ColumnDefinition Width="*" />    <!-- Min -->
+                                    <ColumnDefinition Width="*" />    <!-- Max -->
+                                    <ColumnDefinition Width="*" />    <!-- Pitch 1 -->
+                                    <ColumnDefinition Width="*" />    <!-- Pitch 2 -->
+                                    <ColumnDefinition Width="*" />    <!-- Pitch 3 -->
+                                    <ColumnDefinition Width="*" />    <!-- Angle 1 -->
+                                    <ColumnDefinition Width="*" />    <!-- Angle 2 -->
+                                    <ColumnDefinition Width="*" />    <!-- Angle 3 -->
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Span Size, Min, Max vertically -->
+                                <TextBlock Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Text="Size (mm)" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Foreground="#475569" FontSize="13" />
+                                <TextBlock Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Text="Min Limit" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Foreground="#475569" FontSize="13" />
+                                <TextBlock Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Text="Max Limit" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Foreground="#475569" FontSize="13" />
+
+                                <!-- Pitch Spanning Header -->
+                                <Border Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="3" Background="#EFF6FF" CornerRadius="4" Margin="2,0,2,4" Padding="4">
+                                    <TextBlock Text="Pitch Observations (mm)" HorizontalAlignment="Center" FontWeight="Bold" Foreground="#1E40AF" FontSize="12" Margin="0" />
+                                </Border>
+
+                                <!-- Angle Spanning Header -->
+                                <Border Grid.Row="0" Grid.Column="6" Grid.ColumnSpan="3" Background="#F0FDF4" CornerRadius="4" Margin="2,0,2,4" Padding="4">
+                                    <TextBlock Text="Angle Observations" HorizontalAlignment="Center" FontWeight="Bold" Foreground="#166534" FontSize="12" Margin="0" />
+                                </Border>
+
+                                <!-- Sub-headers -->
+                                <TextBlock Grid.Row="1" Grid.Column="3" Text="Obs 1" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0" Foreground="#64748B" FontSize="12" />
+                                <TextBlock Grid.Row="1" Grid.Column="4" Text="Obs 2" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0" Foreground="#64748B" FontSize="12" />
+                                <TextBlock Grid.Row="1" Grid.Column="5" Text="Obs 3" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0" Foreground="#64748B" FontSize="12" />
+
+                                <TextBlock Grid.Row="1" Grid.Column="6" Text="Obs 1" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0" Foreground="#64748B" FontSize="12" />
+                                <TextBlock Grid.Row="1" Grid.Column="7" Text="Obs 2" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0" Foreground="#64748B" FontSize="12" />
+                                <TextBlock Grid.Row="1" Grid.Column="8" Text="Obs 3" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0" Foreground="#64748B" FontSize="12" />
+                            </Grid>
+
+                            <!-- Separator line -->
+                            <Border BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Margin="0,0,0,8"/>
+
+                            <!-- Scrollable Dynamic Rows Container -->
+                            <ScrollViewer MaxHeight="400" VerticalScrollBarVisibility="Auto">
+                                <StackPanel x:Name="ObservationRowsContainer" />
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Bottom Tracking Details GroupBox -->
+            <GroupBox Grid.Row="5" Margin="0,6,0,12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="12" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="100"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="Auto" MinWidth="80" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="Auto" MinWidth="100" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Row 0: Soaking Time -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Time In:" />
+                    <TextBox Grid.Row="0" Grid.Column="1" x:Name="TxtTimeIn" HorizontalAlignment="Stretch" />
+
+                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Time Out:" />
+                    <TextBox Grid.Row="0" Grid.Column="4" x:Name="TxtTimeOut" HorizontalAlignment="Stretch" />
+
+                    <TextBlock Grid.Row="0" Grid.Column="6" Text="Total Time:" />
+                    <TextBox Grid.Row="0" Grid.Column="7" x:Name="TxtTotalTime" IsReadOnly="True" Background="#F1F5F9" HorizontalAlignment="Stretch" />
+
+                    <!-- Row 2: Bottom Metadata -->
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Judgement:" />
+                    <ComboBox Grid.Row="2" Grid.Column="1" x:Name="ComboJudgement" HorizontalAlignment="Stretch">
+                        <ComboBoxItem Content="OK"/>
+                        <ComboBoxItem Content="NG"/>
+                    </ComboBox>
+
+                    <TextBlock Grid.Row="2" Grid.Column="3" Text="Remark :" />
+                    <TextBox Grid.Row="2" Grid.Column="4" x:Name="TxtRemark" HorizontalAlignment="Stretch" />
+                </Grid>
+            </GroupBox>
+
+            <!-- Save/Submit Button -->
+            <Button Grid.Row="6" Content="Submit" Width="260" Height="42" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,15,0,0" x:Name="BtnSubmit" Click="BtnUpdate_Click"/>
+        </Grid>
+    </ScrollViewer>
+</Window>

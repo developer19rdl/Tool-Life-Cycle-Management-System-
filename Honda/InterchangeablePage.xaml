@@ -1,0 +1,815 @@
+<Page x:Class="InterchangeablePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      d:DesignHeight="700" d:DesignWidth="1200"
+      Title="Interchangeable"
+      Background="#F1F5F9"
+      UseLayoutRounding="True"
+      TextOptions.TextFormattingMode="Display">
+
+    <Page.Resources>
+        <!-- Reusing styles from InstrumentManagementPage for consistency -->
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#334155" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Setter Property="BorderBrush" Value="#CBD5E1" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#3B82F6" />
+                                <Setter Property="BorderThickness" Value="2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Setter Property="BorderBrush" Value="#CBD5E1" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="TabButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#64748B" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="30,12" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,0,12,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6,6,0,0" 
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True"
+                                x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E2E8F0" />
+                                <Setter Property="Foreground" Value="#1E293B" />
+                            </Trigger>
+                            <Trigger Property="Tag" Value="Selected">
+                                <Setter TargetName="border" Property="Background" Value="#0263E0" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#475569" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="BorderBrush" Value="#E2E8F0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="8" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F8FAFC" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#CBD5E1" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F1F5F9" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#F8FAFC" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#E2E8F0" />
+                                <Setter Property="Foreground" Value="#94A3B8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
+            <Setter Property="Background" Value="#3B82F6" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="#3B82F6" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2563EB" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#2563EB" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1D4ED8" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#1D4ED8" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#E2E8F0" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#CBD5E1" />
+                                <Setter Property="Foreground" Value="#94A3B8" />
+                            </Trigger>
+                            <Trigger Property="Tag" Value="BulkMode">
+                                <Setter TargetName="border" Property="Background" Value="#1E3A8A" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#1E3A8A" />
+                            </Trigger>
+                            <Trigger Property="Tag" Value="Scanning">
+                                <Setter TargetName="border" Property="Background" Value="#10B981" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#10B981" />
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Tag" Value="BulkMode" />
+                                    <Condition Property="IsMouseOver" Value="True" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="border" Property="Background" Value="#2563EB" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#2563EB" />
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Tag" Value="Scanning" />
+                                    <Condition Property="IsMouseOver" Value="True" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="border" Property="Background" Value="#059669" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#059669" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StatusActionButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#F1F5F9" />
+                    <Setter Property="Foreground" Value="#94A3B8" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="RedButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#EF4444" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#DC2626" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#B91C1C" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GroupFilterButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#E2E8F0" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="0,8" />
+            <Setter Property="Width" Value="110" />
+            <Setter Property="Margin" Value="0,0,12,10" />
+            <Setter Property="BorderBrush" Value="#CBD5E1" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="4" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F1F5F9" />
+                                <Setter Property="BorderBrush" Value="#CBD5E1" />
+                                <Setter Property="Foreground" Value="#1E293B" />
+                            </Trigger>
+                            <Trigger Property="Tag" Value="Selected">
+                                <Setter TargetName="border" Property="Background" Value="#0263E0" />
+                                <Setter TargetName="border" Property="BorderThickness" Value="0" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Hyperlink" x:Key="BrandHyperlink">
+            <Setter Property="Foreground" Value="#0263E0" />
+            <Setter Property="TextDecorations" Value="None" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#0263E0" />
+                    <Setter Property="TextDecorations" Value="Underline" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DataGridCellTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Padding" Value="16,0" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True" />
+                        <Condition Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=DataGrid}}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Foreground" Value="White" />
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /> <!-- Title -->
+            <RowDefinition Height="Auto" /> <!-- Tabs -->
+            <RowDefinition Height="*" />    <!-- Content -->
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Interchangeability" FontSize="28" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,24" />
+
+        <!-- Tab Header -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button Content="Department List" Style="{StaticResource TabButtonStyle}" Tag="Selected" Name="BtnDeptList" Click="TabButton_Click" />
+            <Button Content="Interchange" Style="{StaticResource TabButtonStyle}" Name="BtnInterchange" Click="TabButton_Click" />
+            <Button Content="Interchange History" Style="{StaticResource TabButtonStyle}" Name="BtnInterHistory" Click="TabButton_Click" />
+        </StackPanel>
+
+        <!-- Content Area -->
+        <Border Grid.Row="2" Background="White" CornerRadius="0,12,12,12" BorderBrush="#E2E8F0" BorderThickness="1" SnapsToDevicePixels="True">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.03" />
+            </Border.Effect>
+            <Grid x:Name="InterchangeableContentArea" Margin="20">
+                <!-- Department List Tab View -->
+                <Grid x:Name="DeptListTabView" Visibility="Visible" Background="Transparent" MouseDown="DeptListTabView_MouseDown">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" /> <!-- Toolbar -->
+                        <RowDefinition Height="Auto" /> <!-- Filters -->
+                        <RowDefinition Height="*" />    <!-- Table -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Toolbar -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+                        <Button Content="📤 Import" Style="{StaticResource ActionButtonStyle}" Width="120" x:Name="BtnImport" Click="BtnImport_Click" />
+                        <Button Content="↩️ Undo Import" Style="{StaticResource ActionButtonStyle}" Width="140" x:Name="BtnUndoImport" Click="BtnUndoImport_Click" />
+                        <Button Content="🔄 Reset Interchangeability" Style="{StaticResource ActionButtonStyle}" Width="200" x:Name="BtnResetInter" Click="BtnResetInter_Click" />
+                        <Button Style="{StaticResource ActionButtonStyle}" Width="140" Height="34" x:Name="BtnToggleFilter" Click="BtnToggleFilter_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Viewbox Width="16" Height="16" Margin="0,0,8,0">
+                                    <Grid Width="16" Height="16">
+                                        <Path Data="M11,11 L14.5,14.5" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="2.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                        <Ellipse Width="11" Height="11" Margin="1,1,4,4" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="2.5" />
+                                    </Grid>
+                                </Viewbox>
+                                <TextBlock x:Name="TxtToggleFilter" Text="Show Filters" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <TextBlock Text="Cycle:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="16,0,8,0" Foreground="#64748B" />
+                        <ComboBox x:Name="ComboDeptListCycle" Width="250" SelectionChanged="ComboDeptListCycle_SelectionChanged" />
+                        <TextBlock Text="Import/Export:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="16,0,8,0" Foreground="#64748B" />
+                        <ComboBox x:Name="ComboImportExport" Width="130" VerticalContentAlignment="Center"
+                                  SelectionChanged="ComboImportExport_SelectionChanged">
+                            <ComboBoxItem Content="📥 Import" />
+                            <ComboBoxItem Content="📤 Export" />
+                        </ComboBox>
+                        <ProgressBar Width="120" Height="8" VerticalAlignment="Center" Margin="12,0,0,0" x:Name="MainProgressBar" Foreground="Green" Visibility="Collapsed" />
+                    </StackPanel>
+
+                    <!-- Dynamic Filters (Collapsible) -->
+                    <StackPanel x:Name="DeptFilterContainer" Grid.Row="1" Margin="0,0,0,20" Visibility="Collapsed">
+                        <TextBlock Text="Departments:" Margin="0,0,12,8" FontSize="13" FontWeight="SemiBold" Foreground="#64748B" />
+                        <ItemsControl x:Name="DeptFiltersItemsControl">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding}" 
+                                            Style="{StaticResource GroupFilterButtonStyle}" 
+                                            Click="DeptFilterButton_Click" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <!-- Data Table -->
+                    <Border Grid.Row="2" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                        <DataGrid x:Name="DeptListDataGrid" 
+                                  AutoGenerateColumns="False" 
+                                  IsReadOnly="True" 
+                                  BorderThickness="0" 
+                                  Background="Transparent"
+                                  RowHeight="40"
+                                  ColumnHeaderHeight="45"
+                                  GridLinesVisibility="Horizontal"
+                                  HorizontalGridLinesBrush="#F1F5F9">
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#F8FAFC" />
+                                    <Setter Property="Foreground" Value="#64748B" />
+                                    <Setter Property="FontWeight" Value="SemiBold" />
+                                    <Setter Property="Padding" Value="16,0" />
+                                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                    <Setter Property="BorderBrush" Value="#E2E8F0" />
+                                </Style>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Background" Value="White" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F1F5F9" />
+                                        </Trigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsSelected" Value="True" />
+                                                <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                            </MultiTrigger.Conditions>
+                                            <Setter Property="Background" Value="#0263E0" />
+                                            <Setter Property="Foreground" Value="White" />
+                                        </MultiTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding id}" Width="50" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                <DataGridTextColumn Header="Department" Binding="{Binding Department}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                <DataGridTextColumn Header="Instrument Name" Binding="{Binding InstrumentName}" Width="200" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                <DataGridTemplateColumn Header="Size &amp; Range" Width="150">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                              <TextBlock Style="{StaticResource DataGridCellTextBlockStyle}">
+                                                  <Hyperlink Click="BtnSizeDetails_Click" FontWeight="SemiBold">
+                                                      <Hyperlink.Style>
+                                                          <Style TargetType="Hyperlink" BasedOn="{StaticResource BrandHyperlink}">
+                                                              <Style.Triggers>
+                                                                  <MultiDataTrigger>
+                                                                      <MultiDataTrigger.Conditions>
+                                                                          <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True" />
+                                                                          <Condition Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=DataGrid}}" Value="True" />
+                                                                      </MultiDataTrigger.Conditions>
+                                                                      <Setter Property="Foreground" Value="#98AFC7" />
+                                                                  </MultiDataTrigger>
+                                                              </Style.Triggers>
+                                                          </Style>
+                                                      </Hyperlink.Style>
+                                                      <TextBlock Text="As per master list" />
+                                                  </Hyperlink>
+                                              </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Control No" Binding="{Binding [Control No]}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                <DataGridTextColumn Header="Color" Binding="{Binding Color}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+
+                <!-- Interchange Tab View -->
+                <Grid x:Name="InterchangeTabView" Visibility="Collapsed" Background="Transparent" MouseDown="InterchangeTabView_MouseDown">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" /> <!-- Header & Cycle -->
+                        <RowDefinition Height="Auto" /> <!-- Search & Actions -->
+                        <RowDefinition Height="*" />    <!-- Results Table -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Cycle Selection Section -->
+                    <Border Grid.Row="0" Margin="0,0,0,20" Padding="0,0,0,15" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Row 1: Cycle Selection & Start Next Cycle Button -->
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="Cycle:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#64748B" />
+                                <ComboBox x:Name="ComboCycle" Width="250" SelectionChanged="ComboCycle_SelectionChanged" />
+                                <TextBlock x:Name="TxtActiveCycle" Text="Active today: Jul'26 Yellow Cycle" Margin="20,0,0,0" Foreground="#64748B" VerticalAlignment="Center" FontSize="13" />
+                            </StackPanel>
+
+                            <Button Grid.Row="0" Grid.Column="1" Content="Start Next Cycle" Style="{StaticResource PrimaryButtonStyle}" Width="160" Height="34" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0" x:Name="BtnNextCycle" Click="BtnNextCycle_Click" />
+
+                            <!-- Row 2: Cycle Range Label -->
+                            <TextBlock Grid.Row="1" Grid.ColumnSpan="2" x:Name="TxtCycleRange" Text="Jul '21 Green Cycle (01-Jul-2026 to 31-Dec-2026)" FontSize="18" FontWeight="Bold" Foreground="#1E293B" Margin="0,15,0,0" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Search, Actions & Filters Section -->
+                    <Grid Grid.Row="1" Margin="0,0,0,20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left: Search & Filter Toggle -->
+                        <StackPanel Grid.Column="0" Margin="0,0,30,0" VerticalAlignment="Top">
+                            <TextBlock Text="Control No" Margin="0,0,0,8" FontSize="13" FontWeight="SemiBold" Foreground="#64748B" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="TxtInterSearch" Width="200" Margin="0,0,8,0" KeyDown="TxtInterSearch_KeyDown" />
+                                <Button Style="{StaticResource ActionButtonStyle}" Width="42" Height="34" x:Name="BtnInterSearch" Click="BtnInterSearch_Click">
+                                    <Viewbox Width="18" Height="18">
+                                        <Grid Width="16" Height="16">
+                                            <Path Data="M11,11 L14.5,14.5" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="2.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                            <Ellipse Width="11" Height="11" Margin="1,1,4,4" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="2.5" />
+                                        </Grid>
+                                    </Viewbox>
+                                </Button>
+                            </StackPanel>
+                            <Button Style="{StaticResource ActionButtonStyle}" Width="140" Height="34" x:Name="BtnInterToggleFilter" Click="BtnInterToggleFilter_Click" Margin="0,10,0,0" HorizontalAlignment="Left">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox Width="16" Height="16" Margin="0,0,8,0">
+                                        <Grid Width="16" Height="16">
+                                            <Path Data="M11,11 L14.5,14.5" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="2.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                            <Ellipse Width="11" Height="11" Margin="1,1,4,4" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="2.5" />
+                                        </Grid>
+                                    </Viewbox>
+                                    <TextBlock x:Name="TxtInterToggleFilter" Text="Show Filters" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Right: Actions -->
+                        <Grid Grid.Column="1" VerticalAlignment="Top">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Text="Actions" FontSize="13" FontWeight="SemiBold" Foreground="#64748B" Margin="0,0,0,8" />
+                            
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <WrapPanel Grid.Column="0">
+                                    <Button Content="Issued" Style="{StaticResource StatusActionButtonStyle}" Width="80" Height="34" x:Name="BtnIssued" Click="BtnAction_Click" Margin="0,0,8,8" IsEnabled="False" />
+                                    <Button Content="Received" Style="{StaticResource StatusActionButtonStyle}" Width="100" Height="34" x:Name="BtnReceived" Click="BtnAction_Click" Margin="0,0,8,8" IsEnabled="False" />
+                                    <Button Content="WOP" Style="{StaticResource StatusActionButtonStyle}" Width="70" Height="34" x:Name="BtnWOP" Click="BtnAction_Click" Margin="0,0,8,8" />
+                                    <Button Content="Write off" Style="{StaticResource StatusActionButtonStyle}" Width="100" Height="34" x:Name="BtnWriteOff" Click="BtnAction_Click" Margin="0,0,8,8" />
+                                    <Button Content="Temp issuance" Style="{StaticResource StatusActionButtonStyle}" Width="130" Height="34" x:Name="BtnTempIssuance" Click="BtnAction_Click" Margin="0,0,8,8" />
+                                    <Button Content="Reintroduction" Style="{StaticResource StatusActionButtonStyle}" Width="130" Height="34" x:Name="BtnReintroduction" Click="BtnAction_Click" Margin="0,0,8,8" />
+                                    <Button Content="Bulk scan" Style="{StaticResource StatusActionButtonStyle}" Width="100" Height="34" x:Name="BtnBulkScan" Click="BtnBulkScan_Click" Margin="0,0,8,8" Tag="BulkMode" />
+                                    <Button Content="🎨 Change Colour" Style="{StaticResource StatusActionButtonStyle}" Width="140" Height="34" x:Name="BtnChangeColour" Click="BtnChangeColour_Click" Margin="0,0,8,8" Visibility="Collapsed" />
+                                </WrapPanel>
+                                <Button Grid.Column="1" Content="Export CSV" Style="{StaticResource ActionButtonStyle}" Width="110" Height="34" x:Name="BtnExportCSV" Click="BtnExportCSV_Click" Margin="0,0,0,8" VerticalAlignment="Top" />
+                            </Grid>
+                            
+                            <TextBlock Grid.Row="2" x:Name="TxtSelectedControl" Text="Selected: () - Color: - Status:" FontSize="13" FontWeight="SemiBold" Foreground="#64748B" Margin="0,7,0,0" Visibility="Collapsed" />
+                        </Grid>
+
+                        <!-- Department Filters (Collapsible) -->
+                        <StackPanel x:Name="InterDeptFilterContainer" Grid.Row="1" Grid.ColumnSpan="2" Margin="0,20,0,10" Visibility="Collapsed">
+                            <TextBlock Text="Departments:" Margin="0,0,12,8" FontSize="13" FontWeight="SemiBold" Foreground="#64748B" />
+                            <ItemsControl x:Name="InterDeptFiltersItemsControl">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Content="{Binding}" 
+                                                Style="{StaticResource GroupFilterButtonStyle}" 
+                                                Click="InterDeptFilterButton_Click" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Data Table -->
+                    <Border Grid.Row="2" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                        <DataGrid x:Name="InterchangeDataGrid" 
+                                  AutoGenerateColumns="False" 
+                                  IsReadOnly="True" 
+                                  BorderThickness="0" 
+                                  Background="Transparent"
+                                  RowHeight="40"
+                                  ColumnHeaderHeight="45"
+                                  GridLinesVisibility="Horizontal"
+                                  HorizontalGridLinesBrush="#F1F5F9"
+                                  MouseDoubleClick="InterchangeDataGrid_MouseDoubleClick"
+                                  SelectionChanged="InterchangeDataGrid_SelectionChanged">
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#F8FAFC" />
+                                    <Setter Property="Foreground" Value="#64748B" />
+                                    <Setter Property="FontWeight" Value="SemiBold" />
+                                    <Setter Property="Padding" Value="16,0" />
+                                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                    <Setter Property="BorderBrush" Value="#E2E8F0" />
+                                </Style>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Background" Value="White" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F1F5F9" />
+                                        </Trigger>
+                                        <DataTrigger Binding="{Binding Color}" Value="Yellow">
+                                            <Setter Property="Background" Value="#FEF9C3" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Color}" Value="Green">
+                                            <Setter Property="Background" Value="#DCFCE7" />
+                                        </DataTrigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsSelected" Value="True" />
+                                                <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                            </MultiTrigger.Conditions>
+                                            <Setter Property="Background" Value="#0263E0" />
+                                            <Setter Property="Foreground" Value="White" />
+                                        </MultiTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                 <DataGridTextColumn Header="Dept" Binding="{Binding Department}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                 <DataGridTextColumn Header="Date" Binding="{Binding ActionDate, StringFormat=\{0:dd/MM/yy\}}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                 <DataGridTextColumn Header="Time" Binding="{Binding ActionTime, StringFormat=\{0:hh\\:mm\}}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                 <DataGridTextColumn Header="User" Binding="{Binding ActionBy}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                 <DataGridTemplateColumn Header="Control No" Width="120">
+                                     <DataGridTemplateColumn.CellTemplate>
+                                         <DataTemplate>
+                                             <TextBlock Style="{StaticResource DataGridCellTextBlockStyle}">
+                                                  <Hyperlink Click="ControlNoHistory_Click" FontWeight="SemiBold">
+                                                      <Hyperlink.Style>
+                                                          <Style TargetType="Hyperlink">
+                                                              <Setter Property="Foreground" Value="#0263E0" />
+                                                              <Style.Triggers>
+                                                                  <MultiDataTrigger>
+                                                                      <MultiDataTrigger.Conditions>
+                                                                          <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True" />
+                                                                          <Condition Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=DataGrid}}" Value="True" />
+                                                                      </MultiDataTrigger.Conditions>
+                                                                      <Setter Property="Foreground" Value="#98AFC7" />
+                                                                  </MultiDataTrigger>
+                                                              </Style.Triggers>
+                                                          </Style>
+                                                      </Hyperlink.Style>
+                                                      <TextBlock Text="{Binding ControlNo}" />
+                                                  </Hyperlink>
+                                             </TextBlock>
+                                         </DataTemplate>
+                                     </DataGridTemplateColumn.CellTemplate>
+                                 </DataGridTemplateColumn>
+                                 <DataGridTextColumn Header="Color" Binding="{Binding Color}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                 <DataGridTemplateColumn Header="Status" Width="150" SortMemberPath="Status">
+                                     <DataGridTemplateColumn.CellTemplate>
+                                         <DataTemplate>
+                                             <TextBlock Text="{Binding Status}"
+                                                        VerticalAlignment="Center"
+                                                        Padding="16,0"
+                                                        FontSize="14">
+                                                 <TextBlock.Style>
+                                                     <Style TargetType="TextBlock">
+                                                         <!-- Default: same as DataGridCellTextBlockStyle -->
+                                                         <Setter Property="Foreground" Value="#1E293B" />
+                                                         <Setter Property="FontWeight" Value="Normal" />
+                                                         <Style.Triggers>
+                                                             <!-- Purple: any "Received*" status with RFID tag linked -->
+                                                             <DataTrigger Binding="{Binding IsReceivedWithRFID}" Value="True">
+                                                                 <Setter Property="Foreground" Value="#7C3AED" />
+                                                                 <Setter Property="FontWeight" Value="SemiBold" />
+                                                             </DataTrigger>
+                                                             <!-- White when row is selected + focused (readability) -->
+                                                             <MultiDataTrigger>
+                                                                 <MultiDataTrigger.Conditions>
+                                                                     <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True" />
+                                                                     <Condition Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=DataGrid}}" Value="True" />
+                                                                 </MultiDataTrigger.Conditions>
+                                                                 <Setter Property="Foreground" Value="White" />
+                                                             </MultiDataTrigger>
+                                                         </Style.Triggers>
+                                                     </Style>
+                                                 </TextBlock.Style>
+                                             </TextBlock>
+                                         </DataTemplate>
+                                     </DataGridTemplateColumn.CellTemplate>
+                                 </DataGridTemplateColumn>
+                                 <DataGridTextColumn Header="Instrument Name" Binding="{Binding InstrumentName}" Width="200" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                 <DataGridTemplateColumn Header="Size &amp; Range" Width="150">
+                                     <DataGridTemplateColumn.CellTemplate>
+                                         <DataTemplate>
+                                             <TextBlock Style="{StaticResource DataGridCellTextBlockStyle}">
+                                                  <Hyperlink Click="BtnSizeDetails_Click" FontWeight="SemiBold">
+                                                      <Hyperlink.Style>
+                                                          <Style TargetType="Hyperlink" BasedOn="{StaticResource BrandHyperlink}">
+                                                              <Style.Triggers>
+                                                                  <MultiDataTrigger>
+                                                                      <MultiDataTrigger.Conditions>
+                                                                          <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True" />
+                                                                          <Condition Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=DataGrid}}" Value="True" />
+                                                                      </MultiDataTrigger.Conditions>
+                                                                      <Setter Property="Foreground" Value="#98AFC7" />
+                                                                  </MultiDataTrigger>
+                                                              </Style.Triggers>
+                                                          </Style>
+                                                      </Hyperlink.Style>
+                                                      <TextBlock Text="As per master list" />
+                                                  </Hyperlink>
+                                             </TextBlock>
+                                         </DataTemplate>
+                                     </DataGridTemplateColumn.CellTemplate>
+                                 </DataGridTemplateColumn>
+                                 <DataGridTextColumn Header="Remarks" Binding="{Binding Remarks}" Width="*" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+                
+                <!-- Interchange History Tab View -->
+                <Grid x:Name="InterHistoryTabView" Visibility="Collapsed" Background="Transparent" MouseDown="InterHistoryTabView_MouseDown">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" /> <!-- Search & Cycle -->
+                        <RowDefinition Height="Auto" /> <!-- Dynamic Filters -->
+                        <RowDefinition Height="*" />    <!-- Table -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Search Section -->
+                    <Grid Grid.Row="0" Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,20,0" VerticalAlignment="Bottom">
+                            <TextBlock Text="Control No" Margin="0,0,0,8" FontSize="13" FontWeight="SemiBold" Foreground="#64748B" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="TxtHistorySearch" Width="200" Margin="0,0,8,0" KeyDown="TxtHistorySearch_KeyDown" />
+                                <Button Style="{StaticResource ActionButtonStyle}" Width="42" Height="34" x:Name="BtnHistorySearch" Click="BtnHistorySearch_Click">
+                                    <Viewbox Width="18" Height="18">
+                                        <Grid Width="16" Height="16">
+                                            <Path Data="M11,11 L14.5,14.5" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="2.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                            <Ellipse Width="11" Height="11" Margin="1,1,4,4" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="2.5" />
+                                        </Grid>
+                                    </Viewbox>
+                                </Button>
+                            </StackPanel>
+                            <Button Style="{StaticResource ActionButtonStyle}" Width="140" Height="34" x:Name="BtnHistoryToggleFilter" Click="BtnHistoryToggleFilter_Click" Margin="0,10,0,0" HorizontalAlignment="Left">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox Width="16" Height="16" Margin="0,0,8,0">
+                                        <Grid Width="16" Height="16">
+                                            <Path Data="M11,11 L14.5,14.5" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="2.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                            <Ellipse Width="11" Height="11" Margin="1,1,4,4" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="2.5" />
+                                        </Grid>
+                                    </Viewbox>
+                                    <TextBlock x:Name="TxtHistoryToggleFilter" Text="Show Filters" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,0">
+                            <Button Content="Export CSV" Style="{StaticResource ActionButtonStyle}" Width="110" Height="34" x:Name="BtnHistoryExportCSV" Click="BtnHistoryExportCSV_Click" Margin="0,0,10,0" />
+                            <Button Content="Clear Data" Style="{StaticResource RedButtonStyle}" Width="100" Height="34" x:Name="BtnHistoryClear" Click="BtnHistoryClear_Click" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Dynamic Filters (Collapsible) -->
+                    <StackPanel x:Name="HistoryDeptFilterContainer" Grid.Row="1" Margin="0,0,0,20" Visibility="Collapsed">
+                        <TextBlock Text="Departments:" Margin="0,0,12,8" FontSize="13" FontWeight="SemiBold" Foreground="#64748B" />
+                        <ItemsControl x:Name="HistoryDeptFiltersItemsControl">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding}" 
+                                            Style="{StaticResource GroupFilterButtonStyle}" 
+                                            Click="HistoryDeptFilterButton_Click" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <!-- Data Table -->
+                    <Border Grid.Row="2" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                        <DataGrid x:Name="InterHistoryDataGrid" 
+                                  AutoGenerateColumns="True" 
+                                  IsReadOnly="True" 
+                                  BorderThickness="0" 
+                                  Background="Transparent"
+                                  RowHeight="40"
+                                  ColumnHeaderHeight="45"
+                                  GridLinesVisibility="Horizontal"
+                                  HorizontalGridLinesBrush="#F1F5F9"
+                                  AutoGeneratingColumn="InterHistoryDataGrid_AutoGeneratingColumn"
+                                  MouseUp="InterHistoryDataGrid_MouseUp">
+                            <DataGrid.Resources>
+                                <!-- Force selection colors to be transparent for this specific grid -->
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#1E293B" />
+                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
+                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#1E293B" />
+
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#F8FAFC" />
+                                    <Setter Property="Foreground" Value="#64748B" />
+                                    <Setter Property="FontWeight" Value="SemiBold" />
+                                    <Setter Property="Padding" Value="16,0" />
+                                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                    <Setter Property="BorderBrush" Value="#E2E8F0" />
+                                </Style>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Background" Value="White" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F1F5F9" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="White" />
+                                            <Setter Property="Foreground" Value="#1E293B" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

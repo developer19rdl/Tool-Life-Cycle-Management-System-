@@ -1,0 +1,124 @@
+<Window x:Class="BulkScanSelectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Select Scan Method" Height="450" Width="650"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Border CornerRadius="12" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="2" Opacity="0.1" />
+        </Border.Effect>
+        <Grid Margin="32">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Margin="0,0,0,32">
+                <TextBlock Text="Bulk Scan Method" FontSize="28" FontWeight="Bold" Foreground="#0F172A" HorizontalAlignment="Center" />
+                <TextBlock Text="Choose how you want to scan tools" FontSize="16" Foreground="#64748B" HorizontalAlignment="Center" Margin="0,8,0,0" />
+            </StackPanel>
+
+            <UniformGrid Grid.Row="1" Columns="2" Margin="0,0,0,24">
+                <!-- USB Scan Option -->
+                <Button x:Name="BtnUsbScan" Click="BtnUsbScan_Click" Margin="12">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#F8FAFC" />
+                            <Setter Property="BorderBrush" Value="#E2E8F0" />
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                                CornerRadius="16" x:Name="border">
+                                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20">
+                                                <Image Source="/Assets/rfid_usb_reader.png" Width="140" Height="140" Margin="0,0,0,16" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" />
+                                                <TextBlock Text="RFID USB Scan" FontSize="18" FontWeight="Bold" Foreground="#0F172A" HorizontalAlignment="Center" />
+                                                <TextBlock Text="Using USB Reader" FontSize="13" Foreground="#64748B" HorizontalAlignment="Center" Margin="0,4,0,0" />
+                                            </StackPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#F1F5F9" />
+                                                <Setter TargetName="border" Property="BorderBrush" Value="#3B82F6" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!-- Gun Scan Option -->
+                <Button x:Name="BtnGunScan" Click="BtnGunScan_Click" Margin="12">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#F8FAFC" />
+                            <Setter Property="BorderBrush" Value="#E2E8F0" />
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                                CornerRadius="16" x:Name="border">
+                                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20">
+                                                <Image Source="/Assets/rfid_gun_scanner.png" Width="140" Height="140" Margin="0,0,0,16" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" />
+                                                <TextBlock Text="RFID Gun Scan" FontSize="18" FontWeight="Bold" Foreground="#0F172A" HorizontalAlignment="Center" />
+                                                <TextBlock Text="Using Wireless Gun" FontSize="13" Foreground="#64748B" HorizontalAlignment="Center" Margin="0,4,0,0" />
+                                            </StackPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#F1F5F9" />
+                                                <Setter TargetName="border" Property="BorderBrush" Value="#3B82F6" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </UniformGrid>
+
+            <Button Grid.Row="2" Content="Cancel" Click="BtnCancel_Click" Width="100" Height="36" HorizontalAlignment="Center">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Foreground" Value="#64748B" />
+                        <Setter Property="FontSize" Value="14" />
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                        <Setter Property="Cursor" Value="Hand" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" x:Name="border">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="border" Property="Background" Value="#F1F5F9" />
+                                            <Setter Property="Foreground" Value="#1E293B" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </Grid>
+    </Border>
+</Window>

@@ -1,0 +1,150 @@
+﻿<Page x:Class="DatabaseSettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="DatabaseSettingsPage">
+
+    <Grid Background="#F8FAFC">
+        <Border Background="White" 
+                CornerRadius="16" 
+                Padding="40" 
+                MaxWidth="500"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                BorderBrush="#E2E8F0"
+                BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="25" ShadowDepth="2" Opacity="0.08" Color="#64748B"/>
+            </Border.Effect>
+
+            <StackPanel>
+                <TextBlock Text="Database Configuration" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,5"/>
+                <TextBlock Text="Set up your connection parameters below." FontSize="14" Foreground="#64748B" Margin="0,0,0,25"/>
+
+                <RadioButton Content="MySQL Server" IsChecked="True" FontSize="15" FontWeight="SemiBold" Foreground="#3B82F6" Margin="0,0,0,20"/>
+
+                <Grid>
+                    <Grid.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize" Value="13"/>
+                            <Setter Property="FontWeight" Value="Medium"/>
+                            <Setter Property="Foreground" Value="#475569"/>
+                            <Setter Property="Margin" Value="0,0,0,5"/>
+                        </Style>
+
+                        <Style TargetType="TextBox">
+                            <Setter Property="Height" Value="38"/>
+                            <Setter Property="Padding" Value="10,5"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="0,0,0,15"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TextBox">
+                                        <Border Name="Border" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="8" Background="White">
+                                            <ScrollViewer x:Name="PART_ContentHost" Margin="5,0"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsFocused" Value="True">
+                                                <Setter TargetName="Border" Property="BorderBrush" Value="#3B82F6"/>
+                                                <Setter TargetName="Border" Property="BorderThickness" Value="1.5"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+                        <Style TargetType="PasswordBox">
+                            <Setter Property="Height" Value="38"/>
+                            <Setter Property="Padding" Value="10,5"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="0,0,0,15"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="PasswordBox">
+                                        <Border Name="Border" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="8" Background="White">
+                                            <ScrollViewer x:Name="PART_ContentHost" Margin="5,0"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsFocused" Value="True">
+                                                <Setter TargetName="Border" Property="BorderBrush" Value="#3B82F6"/>
+                                                <Setter TargetName="Border" Property="BorderThickness" Value="1.5"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Grid.Resources>
+
+                    <StackPanel>
+                        <TextBlock Text="Datasource / Server Address"/>
+                        <TextBox x:Name="txtServer" Text="localhost"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Port"/>
+                                <TextBox x:Name="txtPort" Text="3306"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Database Name"/>
+                                <TextBox x:Name="txtDatabase"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="Username"/>
+                        <TextBox x:Name="txtUsername"/>
+
+                        <TextBlock Text="Password"/>
+                        <PasswordBox x:Name="pbPassword"/>
+
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button x:Name="btnTestConnection" Grid.Column="0" Content="Test Connection" Height="40" Background="#F1F5F9" Foreground="#475569" FontWeight="SemiBold" BorderThickness="0" Click="btnTestConnection_Click">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button x:Name="btnSave" Grid.Column="2" Content="Save Changes" Height="40" Background="#3B82F6" Foreground="White" FontWeight="SemiBold" BorderThickness="0" Click="btnSave_Click">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
+                        <TextBlock x:Name="StatusLabel" Text="Connection Status: Pending" HorizontalAlignment="Center" Margin="0,15,0,0" FontSize="12" Foreground="#94A3B8"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>

@@ -1,0 +1,445 @@
+<Window x:Class="BladeMicrometer75"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Honda"
+        mc:Ignorable="d"
+        Title="Blade Micrometer 0-75 mm" Height="780" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="#F8FAFC"
+        FontFamily="Segoe UI, Segoe UI Variable, Arial">
+
+    <Window.Resources>
+        <!-- Modern Style Definitions -->
+        <Style TargetType="TextBlock" x:Key="LabelStyle">
+            <Setter Property="Foreground" Value="#334155" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Setter Property="BorderBrush" Value="#CBD5E1" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#3B82F6" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Setter Property="BorderBrush" Value="#CBD5E1" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#3B82F6" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2563EB" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1D4ED8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="GroupBox">
+            <Setter Property="BorderBrush" Value="#E2E8F0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="0,6" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupBox">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="1" Background="White" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#000000" Opacity="0.05" BlurRadius="10" ShadowDepth="2" />
+                                </Border.Effect>
+                                <ContentPresenter Margin="16" />
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="20,12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" /> <!-- Heading -->
+                <RowDefinition Height="Auto" /> <!-- Header Info -->
+                <RowDefinition Height="Auto" /> <!-- Environmental -->
+                <RowDefinition Height="Auto" /> <!-- Selected Calibration Masters -->
+                <RowDefinition Height="Auto" /> <!-- Geometric Factors -->
+                <RowDefinition Height="Auto" /> <!-- Observations Tabs -->
+                <RowDefinition Height="Auto" /> <!-- Bottom tracking -->
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Blade Micrometer 0-75 mm" FontSize="18" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,12" />
+
+            <!-- Header Section -->
+            <GroupBox Grid.Row="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="100" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="Auto" MinWidth="100" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="Auto" MinWidth="100" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="12" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="12" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Control No:" />
+                    <TextBox Grid.Row="0" Grid.Column="1" x:Name="TextBox1" IsReadOnly="True" Background="#F1F5F9" />
+
+                    <TextBlock Grid.Row="0" Grid.Column="3" Style="{StaticResource LabelStyle}" Text="Category:" />
+                    <TextBox Grid.Row="0" Grid.Column="4" x:Name="ComboBox1" IsReadOnly="True" Background="#F1F5F9" />
+
+                    <TextBlock Grid.Row="0" Grid.Column="6" Style="{StaticResource LabelStyle}" Text="Location:" />
+                    <TextBox Grid.Row="0" Grid.Column="7" x:Name="ComboBox2" IsReadOnly="True" Background="#F1F5F9" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="LC (mm):" />
+                    <ComboBox Grid.Row="2" Grid.Column="1" x:Name="ComboBox5" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="3" Style="{StaticResource LabelStyle}" Text="Calibration Date:" />
+                    <DatePicker Grid.Row="2" Grid.Column="4" x:Name="TxtCalibrationDate" VerticalContentAlignment="Center" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="6" Style="{StaticResource LabelStyle}" Text="Size:" />
+                    <ComboBox Grid.Row="2" Grid.Column="7" x:Name="TextBox21" />
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Color:" />
+                    <TextBox Grid.Row="4" Grid.Column="1" x:Name="TextBoxColor" IsReadOnly="True" Background="#F1F5F9" />
+                </Grid>
+            </GroupBox>
+
+            <!-- Environmental Conditions -->
+            <GroupBox Grid.Row="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="100"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="Auto" MinWidth="75" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="Auto" MinWidth="45" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="Auto" MinWidth="90" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Temperature:" />
+                    <TextBox Grid.Column="1" x:Name="TextBox30" HorizontalAlignment="Stretch" />
+
+                    <TextBlock Grid.Column="3" Style="{StaticResource LabelStyle}" Text="Humidity:" />
+                    <TextBox Grid.Column="4" x:Name="TextBox28" HorizontalAlignment="Stretch" />
+
+                    <TextBlock Grid.Column="6" Style="{StaticResource LabelStyle}" Text="TMU:" />
+                    <TextBox Grid.Column="7" x:Name="TextBox29" HorizontalAlignment="Stretch" IsReadOnly="True" Background="#F1F5F9" />
+
+                    <TextBlock Grid.Column="9" Style="{StaticResource LabelStyle}" Text="Depth Error:" />
+                    <TextBox Grid.Column="10" x:Name="TextBox20" HorizontalAlignment="Stretch" />
+                </Grid>
+            </GroupBox>
+
+            <!-- Geometric Factors -->
+            <GroupBox Grid.Row="4">
+                <StackPanel>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Geometric Factors" FontWeight="Bold" FontSize="16" Foreground="#1E293B" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="20,0,0,0">
+                            <TextBlock Style="{StaticResource LabelStyle}" Text="Calibration master:" VerticalAlignment="Center" />
+                            <Button x:Name="BtnBrowseMasterGeometric" Content="..." Width="40" Height="24" Click="BtnBrowseMasterGeometric_Click" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Selected Masters for Geometric -->
+                    <Border x:Name="MasterGroupBoxGeometric" Visibility="Collapsed" Margin="0,0,0,10" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Padding="0,0,0,10">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                            <ItemsControl x:Name="ItemsControlSelectedMastersGeometric">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,0,8,0" Background="#F8FAFC">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Description}" FontWeight="SemiBold" Foreground="#1E293B" FontSize="12" />
+                                                <TextBlock Text=" | " Foreground="#64748B" Margin="4,0" />
+                                                <TextBlock Text="{Binding MasterUncertainty, StringFormat=N9}" Foreground="#0F172A" FontSize="12" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="250" />
+                            <ColumnDefinition Width="300" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Parallelism -->
+                        <TextBlock x:Name="LabelParallel" Grid.Row="0" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Parallelism of the Measuring Faces (mm):" />
+                        <UniformGrid Grid.Row="0" Grid.Column="1" Columns="3">
+                            <TextBox x:Name="txtParallel_1" Margin="2" />
+                            <TextBox x:Name="txtParallel_2" Margin="2" />
+                            <TextBox x:Name="txtParallel_3" Margin="2" />
+                        </UniformGrid>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Observation Tabs -->
+            <GroupBox Grid.Row="5">
+                <StackPanel>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Observations" FontWeight="Bold" FontSize="16" Foreground="#1E293B" Margin="10,0,0,0" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="20,0,0,0">
+                            <TextBlock Style="{StaticResource LabelStyle}" Text="Calibration master:" VerticalAlignment="Center" />
+                            <Button x:Name="BtnBrowseMasterObservation" Content="..." Width="40" Height="24" Click="BtnBrowseMasterObservation_Click" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Selected Masters for Observation -->
+                    <Border x:Name="MasterGroupBoxObservation" Visibility="Collapsed" Margin="10,0,0,10" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Padding="0,0,0,10">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                            <ItemsControl x:Name="ItemsControlSelectedMastersObservation">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,0,8,0" Background="#F8FAFC">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Description}" FontWeight="SemiBold" Foreground="#1E293B" FontSize="12" />
+                                                <TextBlock Text=" | " Foreground="#64748B" Margin="4,0" />
+                                                <TextBlock Text="{Binding MasterUncertainty, StringFormat=N9}" Foreground="#0F172A" FontSize="12" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
+                    
+                    <TabControl x:Name="TabControlObservations" Background="Transparent" BorderThickness="0" Padding="0,5,0,0">
+                        <TabControl.Resources>
+                            <Style TargetType="TabItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TabItem">
+                                            <Border Name="Border" BorderThickness="0,0,0,3" Padding="12,8" Margin="0,0,16,0" Cursor="Hand">
+                                                <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="Border" Property="BorderBrush" Value="#3B82F6" />
+                                                    <Setter Property="Foreground" Value="#3B82F6" />
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="False">
+                                                    <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                                                    <Setter Property="Foreground" Value="#64748B" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TabControl.Resources>
+
+                        <TabItem x:Name="TabItem0_25" Header="Range 0 - 25 mm">
+                            <StackPanel Margin="0,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" MinWidth="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="40"/><ColumnDefinition Width="Auto" MinWidth="80"/><ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" /><RowDefinition Height="8" /><RowDefinition Height="Auto" /><RowDefinition Height="8" /><RowDefinition Height="Auto" /><RowDefinition Height="8" /><RowDefinition Height="Auto" /><RowDefinition Height="8" /><RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <!-- Rows for 2.5 to 25.0 -->
+                                    <TextBlock x:Name="Label2_5" Grid.Row="0" Grid.Column="0" Text="2.500 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="0" Grid.Column="1" Columns="3"><TextBox x:Name="txt2_5_1" Margin="2" /><TextBox x:Name="txt2_5_2" Margin="2" /><TextBox x:Name="txt2_5_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label15_0" Grid.Row="0" Grid.Column="3" Text="15.000 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="0" Grid.Column="4" Columns="3"><TextBox x:Name="txt15_0_1" Margin="2" /><TextBox x:Name="txt15_0_2" Margin="2" /><TextBox x:Name="txt15_0_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label5_1" Grid.Row="2" Grid.Column="0" Text="5.100 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="2" Grid.Column="1" Columns="3"><TextBox x:Name="txt5_1_1" Margin="2" /><TextBox x:Name="txt5_1_2" Margin="2" /><TextBox x:Name="txt5_1_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label17_6" Grid.Row="2" Grid.Column="3" Text="17.600 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="2" Grid.Column="4" Columns="3"><TextBox x:Name="txt17_6_1" Margin="2" /><TextBox x:Name="txt17_6_2" Margin="2" /><TextBox x:Name="txt17_6_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label7_7" Grid.Row="4" Grid.Column="0" Text="7.700 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="4" Grid.Column="1" Columns="3"><TextBox x:Name="txt7_7_1" Margin="2" /><TextBox x:Name="txt7_7_2" Margin="2" /><TextBox x:Name="txt7_7_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label20_2" Grid.Row="4" Grid.Column="3" Text="20.200 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="4" Grid.Column="4" Columns="3"><TextBox x:Name="txt20_2_1" Margin="2" /><TextBox x:Name="txt20_2_2" Margin="2" /><TextBox x:Name="txt20_2_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label10_3" Grid.Row="6" Grid.Column="0" Text="10.300 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="6" Grid.Column="1" Columns="3"><TextBox x:Name="txt10_3_1" Margin="2" /><TextBox x:Name="txt10_3_2" Margin="2" /><TextBox x:Name="txt10_3_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label22_8" Grid.Row="6" Grid.Column="3" Text="22.800 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="6" Grid.Column="4" Columns="3"><TextBox x:Name="txt22_8_1" Margin="2" /><TextBox x:Name="txt22_8_2" Margin="2" /><TextBox x:Name="txt22_8_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label12_9" Grid.Row="8" Grid.Column="0" Text="12.900 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="8" Grid.Column="1" Columns="3"><TextBox x:Name="txt12_9_1" Margin="2" /><TextBox x:Name="txt12_9_2" Margin="2" /><TextBox x:Name="txt12_9_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label25_0" Grid.Row="8" Grid.Column="3" Text="25.000 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="8" Grid.Column="4" Columns="3"><TextBox x:Name="txt25_0_1" Margin="2" /><TextBox x:Name="txt25_0_2" Margin="2" /><TextBox x:Name="txt25_0_3" Margin="2" /></UniformGrid>
+                                </Grid>
+                            </StackPanel>
+                        </TabItem>
+
+                        <TabItem x:Name="TabItem25_50" Header="Range 25 - 50 mm">
+                            <StackPanel Margin="0,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" MinWidth="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="40"/><ColumnDefinition Width="Auto" MinWidth="80"/><ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" /><RowDefinition Height="8" /><RowDefinition Height="Auto" /><RowDefinition Height="8" /><RowDefinition Height="Auto" /><RowDefinition Height="8" /><RowDefinition Height="Auto" /><RowDefinition Height="8" /><RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <!-- Rows for 27.5 to 50.0 -->
+                                    <TextBlock x:Name="Label27_5" Grid.Row="0" Grid.Column="0" Text="27.500 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="0" Grid.Column="1" Columns="3"><TextBox x:Name="txt27_5_1" Margin="2" /><TextBox x:Name="txt27_5_2" Margin="2" /><TextBox x:Name="txt27_5_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label40_0" Grid.Row="0" Grid.Column="3" Text="40.000 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="0" Grid.Column="4" Columns="3"><TextBox x:Name="txt40_0_1" Margin="2" /><TextBox x:Name="txt40_0_2" Margin="2" /><TextBox x:Name="txt40_0_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label30_1" Grid.Row="2" Grid.Column="0" Text="30.100 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="2" Grid.Column="1" Columns="3"><TextBox x:Name="txt30_1_1" Margin="2" /><TextBox x:Name="txt30_1_2" Margin="2" /><TextBox x:Name="txt30_1_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label42_6" Grid.Row="2" Grid.Column="3" Text="42.600 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="2" Grid.Column="4" Columns="3"><TextBox x:Name="txt42_6_1" Margin="2" /><TextBox x:Name="txt42_6_2" Margin="2" /><TextBox x:Name="txt42_6_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label32_7" Grid.Row="4" Grid.Column="0" Text="32.700 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="4" Grid.Column="1" Columns="3"><TextBox x:Name="txt32_7_1" Margin="2" /><TextBox x:Name="txt32_7_2" Margin="2" /><TextBox x:Name="txt32_7_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label45_2" Grid.Row="4" Grid.Column="3" Text="45.200 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="4" Grid.Column="4" Columns="3"><TextBox x:Name="txt45_2_1" Margin="2" /><TextBox x:Name="txt45_2_2" Margin="2" /><TextBox x:Name="txt45_2_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label35_3" Grid.Row="6" Grid.Column="0" Text="35.300 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="6" Grid.Column="1" Columns="3"><TextBox x:Name="txt35_3_1" Margin="2" /><TextBox x:Name="txt35_3_2" Margin="2" /><TextBox x:Name="txt35_3_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label47_8" Grid.Row="6" Grid.Column="3" Text="47.800 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="6" Grid.Column="4" Columns="3"><TextBox x:Name="txt47_8_1" Margin="2" /><TextBox x:Name="txt47_8_2" Margin="2" /><TextBox x:Name="txt47_8_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label37_9" Grid.Row="8" Grid.Column="0" Text="37.900 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="8" Grid.Column="1" Columns="3"><TextBox x:Name="txt37_9_1" Margin="2" /><TextBox x:Name="txt37_9_2" Margin="2" /><TextBox x:Name="txt37_9_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label50_0" Grid.Row="8" Grid.Column="3" Text="50.000 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="8" Grid.Column="4" Columns="3"><TextBox x:Name="txt50_0_1" Margin="2" /><TextBox x:Name="txt50_0_2" Margin="2" /><TextBox x:Name="txt50_0_3" Margin="2" /></UniformGrid>
+                                </Grid>
+                            </StackPanel>
+                        </TabItem>
+
+                        <TabItem x:Name="TabItem50_75" Header="Range 50 - 75 mm">
+                            <StackPanel Margin="0,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" MinWidth="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="40"/><ColumnDefinition Width="Auto" MinWidth="80"/><ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" /><RowDefinition Height="8" /><RowDefinition Height="Auto" /><RowDefinition Height="8" /><RowDefinition Height="Auto" /><RowDefinition Height="8" /><RowDefinition Height="Auto" /><RowDefinition Height="8" /><RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <!-- Rows for 52.5 to 75.0 -->
+                                    <TextBlock x:Name="Label52_5" Grid.Row="0" Grid.Column="0" Text="52.500 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="0" Grid.Column="1" Columns="3"><TextBox x:Name="txt52_5_1" Margin="2" /><TextBox x:Name="txt52_5_2" Margin="2" /><TextBox x:Name="txt52_5_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label65_0" Grid.Row="0" Grid.Column="3" Text="65.000 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="0" Grid.Column="4" Columns="3"><TextBox x:Name="txt65_0_1" Margin="2" /><TextBox x:Name="txt65_0_2" Margin="2" /><TextBox x:Name="txt65_0_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label55_1" Grid.Row="2" Grid.Column="0" Text="55.100 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="2" Grid.Column="1" Columns="3"><TextBox x:Name="txt55_1_1" Margin="2" /><TextBox x:Name="txt55_1_2" Margin="2" /><TextBox x:Name="txt55_1_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label67_6" Grid.Row="2" Grid.Column="3" Text="67.600 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="2" Grid.Column="4" Columns="3"><TextBox x:Name="txt67_6_1" Margin="2" /><TextBox x:Name="txt67_6_2" Margin="2" /><TextBox x:Name="txt67_6_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label57_7" Grid.Row="4" Grid.Column="0" Text="57.700 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="4" Grid.Column="1" Columns="3"><TextBox x:Name="txt57_7_1" Margin="2" /><TextBox x:Name="txt57_7_2" Margin="2" /><TextBox x:Name="txt57_7_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label70_2" Grid.Row="4" Grid.Column="3" Text="70.200 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="4" Grid.Column="4" Columns="3"><TextBox x:Name="txt70_2_1" Margin="2" /><TextBox x:Name="txt70_2_2" Margin="2" /><TextBox x:Name="txt70_2_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label60_3" Grid.Row="6" Grid.Column="0" Text="60.300 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="6" Grid.Column="1" Columns="3"><TextBox x:Name="txt60_3_1" Margin="2" /><TextBox x:Name="txt60_3_2" Margin="2" /><TextBox x:Name="txt60_3_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label72_8" Grid.Row="6" Grid.Column="3" Text="72.800 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="6" Grid.Column="4" Columns="3"><TextBox x:Name="txt72_8_1" Margin="2" /><TextBox x:Name="txt72_8_2" Margin="2" /><TextBox x:Name="txt72_8_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label62_9" Grid.Row="8" Grid.Column="0" Text="62.900 mm:" Style="{StaticResource LabelStyle}" /><UniformGrid Grid.Row="8" Grid.Column="1" Columns="3"><TextBox x:Name="txt62_9_1" Margin="2" /><TextBox x:Name="txt62_9_2" Margin="2" /><TextBox x:Name="txt62_9_3" Margin="2" /></UniformGrid>
+                                    <TextBlock x:Name="Label75_0" Grid.Row="8" Grid.Column="3" Text="75.000 mm:" Style="{StaticResource LabelStyle}" Margin="10,0,8,0" /><UniformGrid Grid.Row="8" Grid.Column="4" Columns="3"><TextBox x:Name="txt75_0_1" Margin="2" /><TextBox x:Name="txt75_0_2" Margin="2" /><TextBox x:Name="txt75_0_3" Margin="2" /></UniformGrid>
+                                </Grid>
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Bottom Section -->
+            <GroupBox Grid.Row="6" Margin="0,6,0,12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="12" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="32" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="80" /><ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="Auto" MinWidth="80" /><ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="Auto" MinWidth="100" /><ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Time In:" /><TextBox Grid.Column="1" x:Name="TextBox24" />
+                        <TextBlock Grid.Column="3" Style="{StaticResource LabelStyle}" Text="Time Out:" /><TextBox Grid.Column="4" x:Name="TextBox26" />
+                        <TextBlock Grid.Column="6" Style="{StaticResource LabelStyle}" Text="Total Duration:" /><TextBox Grid.Column="7" x:Name="TextBox25" IsReadOnly="True" Background="#F1F5F9" />
+                    </Grid>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="80" /><ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="Auto" MinWidth="80" /><ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="Auto" MinWidth="100" /><ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Status:" />
+                        <ComboBox Grid.Column="1" x:Name="ComboBox4" HorizontalAlignment="Stretch"><ComboBoxItem Content="OK" IsSelected="True" /><ComboBoxItem Content="NG" /></ComboBox>
+                        <TextBlock Grid.Column="3" Style="{StaticResource LabelStyle}" Text="Remarks:" /><TextBox Grid.Column="4" x:Name="TextBox19" HorizontalAlignment="Stretch" />
+                        <TextBox x:Name="TextBox27" Visibility="Collapsed" />
+                    </Grid>
+
+                    <Button Grid.Row="4" x:Name="Button2" Content="SAVE FINAL RECORD" Height="42" FontSize="15" FontWeight="SemiBold" Width="260" HorizontalAlignment="Center" Click="Button2_Click" />
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
+</Window>

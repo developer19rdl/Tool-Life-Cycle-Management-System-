@@ -1,0 +1,288 @@
+<Window x:Class="BulkScanSummaryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Bulk Scan Summary" Height="700" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="#F3F4F6"
+        WindowStyle="None"
+        AllowsTransparency="True">
+
+    <Window.Resources>
+        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#111827"/>
+        </Style>
+
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+
+        <Style x:Key="ModernListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="AlternationCount" Value="2"/>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="12,8"/>
+                        <Setter Property="Foreground" Value="#374151"/>
+                        <Setter Property="FontSize" Value="13"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="4" Margin="2,1">
+                                        <ContentPresenter />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="border" Property="Background" Value="#F3F4F6"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="border" Property="Background" Value="#E5E7EB"/>
+                                        </Trigger>
+                                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                            <Setter Property="Background" Value="#F9FAFB"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BlueButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#0263E0" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="32,10" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="MinWidth" Value="120" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#0252B9" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SuccessButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#059669" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="32,10" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="MinWidth" Value="120" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#047857" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#D1D5DB" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="RedButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#EF4444" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="32,10" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="MinWidth" Value="120" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#DC2626" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="GreyButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#6B7280" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="32,10" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="MinWidth" Value="120" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#4B5563" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="12" Background="White" Margin="10">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                <TextBlock x:Name="TxtTitle" Text="Bulk Scan Summary" Style="{StaticResource HeaderTextStyle}"/>
+                <TextBlock x:Name="TxtSubtitle" Text="Review the results of the RFID gun scan session." Foreground="#6B7280" Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!-- Stats -->
+            <UniformGrid Grid.Row="1" Columns="2" Margin="0,0,0,20">
+                <Border Background="#ECFDF5" CornerRadius="8" Padding="12" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="Successfully Issued" Foreground="#065F46" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="TxtIssuedCount" Text="0 Items" FontSize="18" FontWeight="Bold" Foreground="#047857"/>
+                    </StackPanel>
+                </Border>
+                <Border Background="#FEF2F2" CornerRadius="8" Padding="12" Margin="10,0,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Ignored / Unknown Tags" Foreground="#991B1B" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="TxtIgnoredCount" Text="0 Tags" FontSize="18" FontWeight="Bold" Foreground="#B91C1C"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- Lists -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Issued List -->
+                <Grid Grid.Column="0" Margin="0,0,10,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Issued Tools" Style="{StaticResource SectionHeaderStyle}" Foreground="#047857"/>
+                    <Border Grid.Row="1" BorderBrush="#E5E7EB" BorderThickness="1.5" CornerRadius="8" Background="#F9FAFB">
+                        <ListBox x:Name="ListIssued" Style="{StaticResource ModernListBoxStyle}" HorizontalContentAlignment="Stretch">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" VerticalContentAlignment="Center" Cursor="Hand" Margin="0,2">
+                                        <StackPanel Margin="5,0,0,0">
+                                            <TextBlock x:Name="ItemTitle" FontWeight="Bold" Foreground="#111827">
+                                                <Run Text="{Binding ControlNo}"/>
+                                                <Run Text=" - "/>
+                                                <Run Text="{Binding Name}"/>
+                                                <Run Text=" | "/>
+                                                <Run Text="{Binding Department}"/>
+                                            </TextBlock>
+                                            <TextBlock x:Name="ItemSub" Text="{Binding RFID}" FontSize="11" Foreground="#6B7280" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </CheckBox>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked}" Value="False">
+                                            <Setter TargetName="ItemTitle" Property="Foreground" Value="#9CA3AF"/>
+                                            <Setter TargetName="ItemSub" Property="Foreground" Value="#D1D5DB"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Border>
+                </Grid>
+
+                <!-- Ignored List -->
+                <Grid Grid.Column="1" Margin="10,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Ignored Tags" Style="{StaticResource SectionHeaderStyle}" Foreground="#B91C1C"/>
+                    <Border Grid.Row="1" BorderBrush="#E5E7EB" BorderThickness="1.5" CornerRadius="8" Background="#F9FAFB">
+                        <ListBox x:Name="ListIgnored" Style="{StaticResource ModernListBoxStyle}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock FontWeight="Bold" Foreground="{Binding DisplayColor}">
+                                            <Run Text="{Binding Reason}"/>
+                                            <Run Text=" "/>
+                                            <Run Text="{Binding ControlNo}"/>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding RFID}" FontSize="11" Foreground="#6B7280" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <!-- Footer -->
+            <Grid Grid.Row="3" Margin="0,20,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button x:Name="BtnApply" Content="Apply" Style="{StaticResource SuccessButtonStyle}" 
+                            Click="BtnApply_Click"/>
+                    <ComboBox x:Name="CmbDepartment" Margin="20,0,0,0" Width="200" Height="40" 
+                              VerticalAlignment="Center" FontSize="14"
+                              SelectionChanged="CmbDepartment_SelectionChanged"/>
+                    <Button x:Name="BtnClear" Content="Clear" Style="{StaticResource GreyButtonStyle}" 
+                            Margin="20,0,0,0" Click="BtnClear_Click"/>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="BtnStop" Content="Stop Scan" Style="{StaticResource RedButtonStyle}" 
+                            Margin="0,0,10,0" Click="BtnStop_Click" IsEnabled="False"/>
+                    <Button x:Name="BtnStartScan" Content="Start Scan" Style="{StaticResource SuccessButtonStyle}" 
+                            Margin="0,0,10,0" Click="BtnStartScan_Click"/>
+                    <Button x:Name="BtnClose" Content="Close" Style="{StaticResource BlueButtonStyle}" 
+                            Click="BtnClose_Click"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

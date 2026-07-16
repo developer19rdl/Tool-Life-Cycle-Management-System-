@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honda Tool Lifecycle Management System - Walkthrough</title>
+    <!-- GitHub Markdown CSS for beautiful styling -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+    <style>
+        body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+            background-color: #ffffff;
+        }
+        @media (max-width: 767px) {
+            body {
+                padding: 15px;
+            }
+        }
+        
+        /* GitHub Alerts Styling */
+        .markdown-alert {
+            padding: 8px 16px;
+            margin-bottom: 16px;
+            color: inherit;
+            border-left: .25em solid #d0d7de;
+        }
+        .markdown-alert-title {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem !important;
+        }
+        .markdown-alert-note {
+            border-left-color: #0969da;
+        }
+        .markdown-alert-note .markdown-alert-title {
+            color: #0969da;
+        }
+        .markdown-alert-important {
+            border-left-color: #8250df;
+        }
+        .markdown-alert-important .markdown-alert-title {
+            color: #8250df;
+        }
+        .markdown-alert-tip {
+            border-left-color: #1a7f37;
+        }
+        .markdown-alert-tip .markdown-alert-title {
+            color: #1a7f37;
+        }
+        .markdown-alert-warning {
+            border-left-color: #9a6700;
+        }
+        .markdown-alert-warning .markdown-alert-title {
+            color: #9a6700;
+        }
+        
+        /* Mermaid specific styling */
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            background: #f6f8fa;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        /* Print styles for PDF export */
+        @media print {
+            body {
+                padding: 0;
+                max-width: 100%;
+            }
+            .mermaid {
+                break-inside: avoid;
+            }
+            table {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="markdown-body">
+    <div id="content">Loading documentation...</div>
+
+    <!-- The Raw Markdown Content -->
+    <script type="text/markdown" id="md-content">
+# Honda Tool Lifecycle Management System — Complete Workflow Guide
+
+**Version**: 1.3.3 | **Framework**: WPF (.NET 8.0) | **Language**: VB.NET | **Database**: MySQL
+
+---
+
+## Table of Contents
+
+1. [Application Overview](#1-application-overview)
+2. [Architecture Diagram](#2-architecture-diagram)
+3. [Login & Authentication](#3-login--authentication)
+4. [Navigation Structure](#4-navigation-structure)
+5. [Section 1 — Database](#5-section-1--database)
+6. [Section 2 — Interchangeability](#6-section-2--interchangeability)
+7. [Section 3 — Calibration](#7-section-3--calibration)
+8. [Section 4 — Inventory Management](#8-section-4--inventory-management)
+9. [Section 5 — History](#9-section-5--history)
+10. [Section 6 — Settings](#10-section-6--settings)
+11. [Section 7 — Records](#11-section-7--records)
+12. [Section 8 — System Settings](#12-section-8--system-settings)
+13. [Cycle Management](#13-cycle-management)
+14. [RFID Integration](#14-rfid-integration)
+15. [End-to-End Workflow](#15-end-to-end-workflow)
+
+---
+
+## 1. Application Overview
+
+The **Honda Tool Lifecycle Management System** is a WPF desktop application that manages the complete lifecycle of measuring instruments and gauges used in Honda manufacturing facilities. It tracks:
+
+- **Inventory** of instruments and gauges (add, edit, delete, import)
+- **Interchangeability** — cycle-based issuance, receipt, and tracking of tools across departments
+- **Calibration** — periodic calibration of instruments with pass/fail/TMU calculations
+- **RFID tagging** — physical tool tracking via RFID scanners (USB and Gun)
+- **Audit trails** — full history of every tool action with document attachments
+
+> [!IMPORTANT]
+> The system operates on a **6-month cycle** model:
+> - **Yellow Cycle**: January–June (e.g., `Jan'26 Yellow Cycle`)
+> - **Green Cycle**: July–December (e.g., `Jul'26 Green Cycle`)
+
+---
+
+## 2. Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph "Presentation Layer - WPF"
+        LW["LoginWindow"]
+        MW["MainWindow (Shell)"]
+        DB["Database Section"]
+        IC["Interchangeability Section"]
+        CAL["Calibration Section"]
+        INV["Inventory Management"]
+        SET["Settings Section"]
+        REC["Records Section"]
+        SYS["System Settings"]
+    end
+
+    subgraph "Business Logic"
+        SQL["MySQLClass.vb (810KB+ Data Layer)"]
+        COMM["CommManager.vb (RFID USB)"]
+        API["RFIDApiServer.vb (REST Port 8080)"]
+        GUN["RFIDGunClient.vb (WiFi Gun)"]
+        CACHE["CalibrationMasterCache / EnvironmentCache"]
+    end
+
+    subgraph "Data Layer - MySQL"
+        TD["type_details"]
+        DM["departmentmaster"]
+        DL["department_list"]
+        INT["interchangeability"]
+        RC["regular_calibration"]
+        IH["interchange_history"]
+        WO["writeoff / reintroduction"]
+        DYN["Dynamic Tables (per type)"]
+        CM["calibrationmaster / calibrationmapping"]
+    end
+
+    LW -->|"Login Success"| MW
+    MW --> DB & IC & CAL & INV & SET & REC & SYS
+    DB & IC & CAL & INV & SET & REC --> SQL
+    SQL --> TD & DM & DL & INT & RC & IH & WO & DYN & CM
+    IC --> COMM & API & GUN
+    INV --> COMM & GUN
+```
+
+---
+
+## 3. Login & Authentication
+
+```mermaid
+flowchart TD
+    A["Application Start"] --> B["LoginWindow"]
+    B --> C{"Enter Username & Password"}
+    C --> D{"Is Admin/RDL123?"}
+    D -->|Yes| F["Store username in session"]
+    D -->|No| E{"Check 'users' table in DB"}
+    E -->|Valid| F
+    E -->|Invalid| G["Show error message"]
+    G --> C
+    F --> H["Open MainWindow"]
+    H --> I["Load HomePage + Start RFID API Server on Port 8080"]
+```
+
+**How to use:**
+1. Launch the application → Login screen appears
+2. Enter credentials (default admin: `Admin` / `RDL123`)
+3. Click **Login** → Main window opens with the navigation bar
+4. Your username appears in the top-right corner
+5. Click the **⏻ power icon** to logout
+
+---
+
+## 4. Navigation Structure
+
+The top navigation bar contains **8 main sections**:
+
+| # | Menu Item | Purpose |
+|---|-----------|---------|
+| 1 | **Database** | Master data management for instruments & gauges |
+| 2 | **Interchangeability** | Cycle-based tool tracking (Issue/Receive/WOP) |
+| 3 | **Calibration** | Calibration scheduling, execution, and results |
+| 4 | **Inventory Management** | Audit, bulk search, and exclusion management |
+| 5 | **History** | *(Placeholder — history accessed via other sections)* |
+| 6 | **Settings** | Types, departments, sizes, calibration mapping |
+| 7 | **Records** | RFID scan logs, registered/unregistered items |
+| 8 | **System Settings** | User management, DB config, RFID scanner setup |
+
+```mermaid
+graph LR
+    MW["MainWindow"] --> DB["Database"]
+    MW --> IC["Interchangeability"]
+    MW --> CAL["Calibration"]
+    MW --> INV["Inventory Mgmt"]
+    MW --> HIS["History"]
+    MW --> SET["Settings"]
+    MW --> REC["Records"]
+    MW --> SYS["System Settings"]
+
+    DB --> DB1["Instruments"]
+    DB --> DB2["Gauges"]
+    DB1 --> DB1a["Category Selection → Instrument Mgmt"]
+    DB2 --> DB2a["Category Selection → Gauge Mgmt"]
+
+    IC --> IC1["Department List"]
+    IC --> IC2["Interchange"]
+    IC --> IC3["History"]
+
+    CAL --> CAL1["Regular Calibration"]
+    CAL --> CAL2["Calibration Master"]
+    CAL --> CAL3["NG List"]
+    CAL --> CAL4["Test (30+ forms)"]
+
+    INV --> INV1["Inventory Audit"]
+    INV --> INV2["Bulk Search"]
+    INV --> INV3["Exclusion List"]
+
+    SET --> SET1["Types"]
+    SET --> SET2["Department"]
+    SET --> SET3["Instrument Sizes"]
+    SET --> SET4["Gauge Sizes"]
+    SET --> SET5["Calibration Mapping"]
+    SET --> SET6["Calibration Master Types"]
+
+    SYS --> SYS1["User Settings"]
+    SYS --> SYS2["Database Settings"]
+    SYS --> SYS3["RFID Scanner"]
+```
+
+---
+
+## 5. Section 1 — Database
+
+**Purpose:** Master data management — register all instruments and gauges into the system.
+
+### How It Works
+
+1. Click **Database** in the nav bar → **Database Management** page appears
+2. Choose either **Instruments** or **Gauges** card
+3. **Category Selection Page** loads all registered types for that category (from `type_details` table)
+4. Click a type card → opens the specific **Management Page**
+
+### Instrument Management Page
+
+| Feature | Description |
+|---------|-------------|
+| **Add** | Opens `AddEditInstrumentWindow` — enter name, control no, color, model, size, section, location, RFID tag |
+| **Edit** | Select a row → Edit button opens the same form pre-populated |
+| **Delete** | Remove the selected instrument record |
+| **Import** | Bulk import from Excel/CSV files with auto-header matching |
+| **Pagination** | 20 records per page with `LIMIT`/`OFFSET` |
+| **Filtering** | Filter by Line, Section, Location, Status |
+| **Control No Generation** | Auto-generates based on `[Prefix]-[XXX]` pattern from `categorycontrol` table |
+
+### Gauge Management Page
+
+Same as instruments but with gauge-specific fields: Drawing No, Tolerance (Tol/Tol2/Tol3), Date of Addition.
+
+> [!TIP]
+> **Dynamic Table Architecture (DTA)**: Each instrument/gauge type gets its own MySQL table. When you add a new type in Settings, a new table is auto-created.
+
+---
+
+## 6. Section 2 — Interchangeability
+
+**Purpose:** The core cycle-based tool interchange tracking system. This is the most complex section.
+
+### Sub-Tabs
+
+#### Tab 1: Department List
+- **What it is:** A staging area for all instruments/gauges assigned to departments for the current cycle
+- **Import:** Upload an Excel/CSV file containing Department, Instrument Name, Size, Control No, Color, Status
+- **Auto-sync:** After import, data is automatically synced to the `interchangeability` table
+- **Undo Import:** Removes the most recent batch of imported records
+- **Filter by:** Department buttons and Cycle dropdown
+
+#### Tab 2: Interchange (Main Tracking)
+- **What it is:** Real-time status tracking of every tool in the active cycle
+- **Statuses:** `Pending` → `Issued` → `Received` → `WOP` → `Write off` → `Re-introduction` → `Temp issuance`
+
+```mermaid
+flowchart TD
+    A["Pending"] -->|"Issue Action"| B["Issued"]
+    B -->|"Receive Action"| C["Received"]
+    A -->|"Not Found"| D["WOP (Without Possession)"]
+    D -->|"Found Later"| E["Re-introduction"]
+    B -->|"Lost/Damaged"| F["Write Off"]
+    F -->|"Found/Repaired"| E
+    A -->|"Temp Loan"| G["Temp Issuance"]
+    G -->|"Returned"| C
+
+    style A fill:#FEF3C7,stroke:#F59E0B
+    style B fill:#DBEAFE,stroke:#3B82F6
+    style C fill:#D1FAE5,stroke:#10B981
+    style D fill:#FEE2E2,stroke:#EF4444
+    style E fill:#E0E7FF,stroke:#6366F1
+    style F fill:#FCA5A5,stroke:#DC2626
+    style G fill:#FDE68A,stroke:#D97706
+```
+
+**Action Buttons (context-sensitive):**
+
+| Action | When Available | What It Does |
+|--------|---------------|--------------|
+| **Issue** | Status = Pending | Marks tool as issued to department |
+| **Receive** | Status = Issued | Marks tool as returned/received |
+| **WOP** | Status = Pending/Issued | Marks tool as "Without Possession" (missing) |
+| **Write Off** | Any non-final status | Permanently writes off a tool (requires PDF document) |
+| **Re-introduce** | Status = WOP/Write Off | Brings a tool back into circulation |
+| **Temp Issuance** | Status = Pending | Temporary loan to another department |
+
+**RFID Scanning:**
+- Select an item → Scan its RFID tag (via USB reader or WiFi Gun)
+- The system matches the RFID to the `interchangeability` record
+- Supports **Bulk Scan Mode** for scanning multiple items at once
+
+#### Tab 3: Interchange History
+- **Pivot table view:** Rows = Control Numbers, Columns = Cycle Names
+- Each cell shows the status of that tool in that cycle
+- Clickable cells: Blue underlined statuses open **Event Details** or **Cycle History** windows
+- Shows data from both `interchangeability` (current) and `interchange_history` (archived) tables
+
+### Cycle Transitions
+
+| Button | Description |
+|--------|-------------|
+| **Next Cycle** | Archives current cycle to history, carries over WOP items, resets Pending items |
+| **Reset (Current Cycle)** | Deletes all data for the current cycle only, rolls back to previous |
+| **Reset (All)** | Nuclear option — clears ALL interchange and calibration data |
+
+---
+
+## 7. Section 3 — Calibration
+
+**Purpose:** Schedule, execute, and track calibration of all instruments and gauges.
+
+### Sub-Tabs
+
+#### Tab 1: Regular Calibration — Status View
+- Shows a DataGrid of all instruments in the selected cycle with calibration status
+- Columns: `instrument_name`, `control_no`, `status`, `is_calibrated`, `calibrated_date`, `due_date`, `calibration_status`
+- Click a **Control No** link to open the calibration form for that instrument
+
+#### Tab 2: Regular Calibration — Instrument Cards
+- Card-based view of all **instrument** types that need calibration
+- Click a card → shows filtered list of that type's instruments
+
+#### Tab 3: Regular Calibration — Gauge Cards
+- Same as above but for **gauge** types
+
+#### Tab 4: Calibration Master
+- **Details sub-tab:** Shows master calibration records (by year) with uploaded documents
+- **Database sub-tab:** Card-based navigation to manage calibration master data per type
+
+#### Tab 5: NG List
+- Shows all instruments that **failed** calibration (`calibration_status = NG`) for the selected cycle
+
+#### Tab 6: Test (Calibration Forms)
+- **30+ calibration form windows** organized into Instruments and Gauges sub-tabs
+
+### Supported Calibration Forms
+
+**Instruments (19 forms):**
+
+| Form | Range |
+|------|-------|
+| Vernier Caliper | 300mm, 600mm, Low Force |
+| Depth Vernier | Standard |
+| Thread Pitch Micrometer | 25mm, 50mm, 70mm, 100mm |
+| Point Micrometer | 25mm, 50mm |
+| Inside Micrometer | 25mm, 50mm |
+| Groove Micrometer | 25mm, 50mm |
+| Geartooth Micrometer | 50mm |
+| External Micrometer | 100mm |
+| Disc Micrometer | 75mm |
+| Depth Micrometer | Standard |
+| Blade Micrometer | 75mm |
+| Bore Gauge | Standard |
+| Passameter | 60mm |
+
+**Gauges (16 forms):**
+
+| Form | Type |
+|------|------|
+| Height Gauge | 600mm, Special |
+| Height Master Gauge | Standard |
+| Dial Gauge | 100 division |
+| Dial Test Indicator | 100 division |
+| Plain Plug Gauge | Go/NoGo |
+| Plain Ring Gauge | Go/NoGo |
+| Snap Gauge | Standard |
+| Thread Ring Gauge | Standard |
+| Thread Plug Gauge | Standard |
+| Taper Plug/Ring Gauge | Standard |
+| Spline Ring Gauge | Standard |
+| Straight Plug Gauge | Standard |
+| Key Groove Gauge | Standard |
+| Feeler Gauge | Standard |
+| Radius Gauge | Standard |
+| Thread Pitch Gauge | Standard |
+
+### Calibration Form Workflow
+
+```mermaid
+flowchart TD
+    A["Open Calibration Form"] --> B["Enter Control No & Environment Data"]
+    B --> C["System loads master limits from DB"]
+    C --> D["Enter 4 trial observations"]
+    D --> E["System calculates: Mean, Error, TMU"]
+    E --> F{"All trials within tolerance?"}
+    F -->|Yes| G["Result: OK ✅"]
+    F -->|No| H["Result: NG ❌"]
+    G --> I["Save to regular_calibration"]
+    H --> I
+    I --> J["Update calibration status & date"]
+    J --> K["Added to NG List if NG"]
+```
+
+> [!NOTE]
+> **TMU (Task Measurement Uncertainty)** is calculated automatically using the formula based on resolution, repeatability, and master uncertainty for each calibration type.
+
+---
+
+## 8. Section 4 — Inventory Management
+
+**Purpose:** Comprehensive inventory auditing via RFID scanning and manual search.
+
+### Sub-Tabs
+
+#### Tab 1: Inventory Audit
+- Cross-references `interchangeability` and `regular_calibration` tables
+- Shows: Instrument Name, Control No, Cycle, Date, Time, Color, Status, Calibration info
+- **Filters:** Cycle, Year, Color, Status, Calibration Status, Department, Date Range, Search text
+
+#### Tab 2: Bulk Search (5 search modes)
+
+| Mode | Description |
+|------|-------------|
+| **Bulk RFID Scan** | Scan multiple RFID tags → system identifies each |
+| **Control No Wise** | Pre-load a list of control numbers → scan to verify presence |
+| **Department Wise** | Select departments → scan to find matching items |
+| **Instrument/Gauge Wise** | Select types → scan to find matching items |
+| **Calibration Audit** | Scan items to verify calibration status (calibrated/not calibrated counts) |
+
+Each mode supports both **WiFi RFID Gun** and **USB RFID Reader**.
+
+#### Tab 3: Exclusion List
+- **Add:** Scan RFID tags to add to exclusion list (excluded from audit counts)
+- **Revoke:** Remove items from the exclusion list
+
+---
+
+## 9. Section 5 — History
+
+History is accessed contextually from other sections:
+- **Interchange History Tab** (in Interchangeability section)
+- **Item History Window** (click Control No links)
+- **Cycle History Window** (click "History" status cells)
+- **Event Details Window** (click status cells in history pivot)
+- **Calibration History Detail Window** (view past calibration records)
+
+---
+
+## 10. Section 6 — Settings
+
+**Purpose:** Configure all master data that the system relies on.
+
+### Sub-Tabs
+
+| Tab | What You Configure |
+|-----|-------------------|
+| **Types** | Add/Edit/Delete instrument and gauge types (each creates a dynamic DB table) |
+| **Department** | Add/Delete department names for the `departmentmaster` table |
+| **Instrument Sizes** | Define sizes and their control number prefixes (`categorycontrol` table) |
+| **Gauge Sizes** | Same as above for gauges (`gauge_categorycontrol` table) |
+| **Calibration Mapping** | Map instrument types to their calibration form windows |
+| **Calibration Master Types** | Define master calibration instrument types (e.g., Gauge Block sets) |
+
+> [!IMPORTANT]
+> **Calibration Mapping** is critical — it tells the system which calibration form to open for each instrument prefix and size. Without this mapping, clicking a Control No in Calibration won't open any form.
+
+---
+
+## 11. Section 7 — Records
+
+**Purpose:** RFID scan monitoring and tag registration status.
+
+### Sub-Tabs
+
+| Tab | Description |
+|-----|-------------|
+| **Records** | Real-time RFID scan logs (auto-refreshes every 2 seconds) |
+| **Registered** | Items with valid RFID tags linked to database records |
+| **Un-Registered** | Scanned RFID tags that don't match any database record |
+
+---
+
+## 12. Section 8 — System Settings
+
+Dropdown menu with three options:
+
+| Option | Description |
+|--------|-------------|
+| **User Settings** | Add/Edit/Delete application users (`users` table) |
+| **Database Settings** | Configure MySQL connection (server, port, database name, credentials) |
+| **RFID Scanner** | Select and configure RFID scanner hardware (USB COM port, WiFi Gun IP/Port) |
+
+---
+
+## 13. Cycle Management
+
+The system operates on 6-month cycles that drive the entire workflow:
+
+```mermaid
+flowchart LR
+    C1["Jan'26 Yellow Cycle<br/>(Jan–Jun 2026)"] -->|"Next Cycle"| C2["Jul'26 Green Cycle<br/>(Jul–Dec 2026)"]
+    C2 -->|"Next Cycle"| C3["Jan'27 Yellow Cycle<br/>(Jan–Jun 2027)"]
+
+    style C1 fill:#FEF3C7,stroke:#F59E0B
+    style C2 fill:#D1FAE5,stroke:#10B981
+    style C3 fill:#FEF3C7,stroke:#F59E0B
+```
+
+**What happens during "Next Cycle" transition:**
+
+1. Current cycle state is archived to `interchange_history`
+2. **WOP items** carry forward to the new cycle (still WOP)
+3. **Pending items** become WOP with reason "Not Issued"
+4. **Temp Issuance items** become WOP with reason "Instrument/Gauge missing"
+5. **Issued/Received items** reset to Pending in the new cycle
+6. The `ActiveCycle` config value is updated
+
+---
+
+## 14. RFID Integration
+
+The system supports two RFID hardware modes:
+
+| Mode | Technology | Connection |
+|------|-----------|------------|
+| **USB Reader** | Serial COM port | `CommManager.vb` sends hex commands (`BB 00 22...`) |
+| **WiFi RFID Gun** | TCP/IP streaming | `RFIDGunClient.vb` connects to gun's IP:Port |
+
+Additionally, an **embedded REST API** runs on port 8080 (`RFIDApiServer.vb`) that accepts external RFID scan events and performs cross-table lookups.
+
+---
+
+## 15. End-to-End Workflow
+
+Here is the complete lifecycle of a tool from registration to calibration:
+
+```mermaid
+flowchart TD
+    A["1. SETUP: Configure in Settings"] --> B["Add Types, Departments,<br/>Sizes, Calibration Mapping"]
+    B --> C["2. DATABASE: Register Instruments/Gauges"]
+    C --> D["Add individual items or<br/>bulk import from Excel"]
+    D --> E["3. INTERCHANGEABILITY: Import Department List"]
+    E --> F["Upload cycle Excel file<br/>(auto-syncs to interchange table)"]
+    F --> G["4. INTERCHANGEABILITY: Track Tool Movement"]
+    G --> H["Issue → Receive → WOP → Write Off<br/>Track via RFID scanning"]
+    H --> I["5. CALIBRATION: Calibrate Instruments"]
+    I --> J["Click Control No → Open calibration form<br/>Enter observations → Get OK/NG result"]
+    J --> K["6. INVENTORY: Audit with RFID"]
+    K --> L["Bulk scan to verify inventory<br/>Cross-reference calibration status"]
+    L --> M["7. CYCLE END: Start Next Cycle"]
+    M --> N["Archive current → Carry WOP forward<br/>→ Start fresh cycle"]
+    N --> E
+
+    style A fill:#E0E7FF,stroke:#6366F1
+    style C fill:#DBEAFE,stroke:#3B82F6
+    style E fill:#FEF3C7,stroke:#F59E0B
+    style G fill:#D1FAE5,stroke:#10B981
+    style I fill:#FCE7F3,stroke:#EC4899
+    style K fill:#FED7AA,stroke:#F97316
+    style M fill:#E5E7EB,stroke:#6B7280
+```
+
+### Step-by-Step Usage Guide
+
+1. **Initial Setup (One-time)**
+   - Go to **Settings** → Add instrument/gauge **Types**
+   - Add **Departments** (AE, PE, Quality, etc.)
+   - Add **Instrument/Gauge Sizes** with control number prefixes
+   - Configure **Calibration Mapping** (link types to calibration forms)
+
+2. **Register Tools**
+   - Go to **Database** → Select Instruments or Gauges
+   - Click a type → **Add** individual items or **Import** from Excel
+   - Assign RFID tags to each tool
+
+3. **Start a Cycle**
+   - Go to **Interchangeability** → Department List tab
+   - **Import** the cycle Excel file (instrument assignments per department)
+   - Data auto-syncs to the Interchange tab
+
+4. **Daily Operations**
+   - Use **Interchange** tab to Issue/Receive/Track tools
+   - Scan RFID tags for quick identification
+   - Mark missing tools as WOP, write off damaged ones
+
+5. **Calibration**
+   - Go to **Calibration** → Regular Calibration
+   - Click instrument **Control No** → calibration form opens
+   - Enter environment data and trial observations
+   - System auto-calculates TMU and OK/NG status
+   - View NG List for failed items
+
+6. **Inventory Audit**
+   - Go to **Inventory Management** → Audit or Bulk Search
+   - Use RFID scanning to verify physical inventory
+   - Compare against database records
+
+7. **End of Cycle**
+   - Go to **Interchangeability** → Click **Next Cycle**
+   - System archives, carries over WOP, and starts fresh
+
+---
+
+> [!TIP]
+> **Key Data Tables Reference:**
+> - `type_details` — All registered instrument/gauge types
+> - `departmentmaster` — Department list
+> - `department_list` — Cycle import staging
+> - `interchangeability` — Active cycle tracking
+> - `interchange_history` — Archived cycle data
+> - `regular_calibration` — Calibration status per instrument per cycle
+> - `calibrationmapping` — Links types to calibration forms
+> - `calibrationmaster` / `calibrationmaster_details` — Master calibration instruments
+> - `writeoff` / `reintroduction` / `wop` / `issue` / `receive` / `temporary_issuance` — Transaction tables
+> - Dynamic tables (one per type) — Instrument/gauge master data
+    </script>
+
+    <!-- Marked JS for parsing markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        
+        // Initialize mermaid but don't run it automatically yet
+        mermaid.initialize({ 
+            startOnLoad: false, 
+            theme: 'default'
+        });
+
+        // 1. Get raw markdown
+        let rawMarkdown = document.getElementById('md-content').textContent;
+
+        // 2. Pre-process GitHub Alerts (Notes, Warnings, etc.)
+        rawMarkdown = rawMarkdown.replace(/^>\s?\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\n(>.*(?:\n>.*)*)/gm, function(match, type, content) {
+            const typeLower = type.toLowerCase();
+            const cleanContent = content.replace(/^>\s?/gm, '');
+            const title = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+            return `<div class="markdown-alert markdown-alert-${typeLower}">\n<div class="markdown-alert-title">${title}</div>\n${cleanContent}\n</div>`;
+        });
+
+        // 3. Parse markdown to HTML using default marked renderer
+        document.getElementById('content').innerHTML = marked.parse(rawMarkdown);
+        
+        // 4. Find all mermaid code blocks and convert them to mermaid divs
+        const mermaidBlocks = document.querySelectorAll('pre code.language-mermaid');
+        mermaidBlocks.forEach(block => {
+            const div = document.createElement('div');
+            div.className = 'mermaid';
+            div.textContent = block.textContent;
+            // Replace the parent <pre> with the new div
+            block.parentElement.replaceWith(div);
+        });
+
+        // 5. Tell Mermaid to render the diagrams
+        mermaid.run({
+            querySelector: '.mermaid'
+        });
+    </script>
+</body>
+</html>

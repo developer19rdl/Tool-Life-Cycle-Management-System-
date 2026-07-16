@@ -1,0 +1,1149 @@
+<Page x:Class="CalibrationPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      d:DesignHeight="700" d:DesignWidth="1200"
+      Title="Calibration"
+      Background="#F1F5F9"
+      UseLayoutRounding="True"
+      TextOptions.TextFormattingMode="Display">
+
+    <Page.Resources>
+        <Style x:Key="CalibrationCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="15,25" />
+            <Setter Property="Margin" Value="0,0,16,16" />
+            <Setter Property="Width" Value="250" />
+            <Setter Property="BorderBrush" Value="#0263E0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.05" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="CalibrationCardTemplate">
+            <Border Style="{StaticResource CalibrationCardStyle}" 
+                    Cursor="Hand"
+                    PreviewMouseLeftButtonDown="Card_MouseLeftButtonDown">
+                <DockPanel LastChildFill="True">
+                    <TextBlock Text="{Binding instrument_name}" 
+                               FontWeight="Bold" 
+                               FontSize="15" 
+                               Foreground="#1E293B" 
+                               TextWrapping="Wrap" 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" 
+                               TextAlignment="Center" />
+                </DockPanel>
+            </Border>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="MasterCardTemplate">
+            <Border Style="{StaticResource CalibrationCardStyle}" 
+                    Cursor="Hand"
+                    PreviewMouseLeftButtonDown="MasterCard_MouseLeftButtonDown">
+                <DockPanel LastChildFill="True">
+                    <TextBlock Text="{Binding instrument_name}" 
+                               FontWeight="Bold" 
+                               FontSize="15" 
+                               Foreground="#1E293B" 
+                               TextWrapping="Wrap" 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" 
+                               TextAlignment="Center" />
+                </DockPanel>
+            </Border>
+        </DataTemplate>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#334155" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="TabButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#64748B" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="30,12" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,0,12,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6,6,0,0" 
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True"
+                                x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E2E8F0" />
+                                <Setter Property="Foreground" Value="#1E293B" />
+                            </Trigger>
+                            <Trigger Property="Tag" Value="Selected">
+                                <Setter TargetName="border" Property="Background" Value="#0263E0" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#475569" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="BorderBrush" Value="#E2E8F0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="8" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F8FAFC" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#CBD5E1" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F1F5F9" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
+            <Setter Property="Background" Value="#3B82F6" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="#3B82F6" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2563EB" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#2563EB" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1D4ED8" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#1D4ED8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- New DataGrid Styles for Consistency -->
+        <Style x:Key="CalibrationDataGridStyle" TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="RowHeight" Value="40" />
+            <Setter Property="ColumnHeaderHeight" Value="45" />
+            <Setter Property="GridLinesVisibility" Value="Horizontal" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#F1F5F9" />
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F8FAFC" />
+            <Setter Property="Foreground" Value="#64748B" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="16,0" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="BorderBrush" Value="#E2E8F0" />
+        </Style>
+
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="White" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F1F5F9" />
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True" />
+                        <Condition Property="Selector.IsSelectionActive" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="#0263E0" />
+                    <Setter Property="Foreground" Value="White" />
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DataGridCellTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Padding" Value="16,0" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True" />
+                        <Condition Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=DataGrid}}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Foreground" Value="White" />
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TextLinkButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#0263E0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <TextBlock Text="{TemplateBinding Content}" TextDecorations="Underline" VerticalAlignment="Center"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#2563EB"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True">
+                    <Setter Property="Foreground" Value="#98AFC7"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SubTabButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#64748B" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="20,10" />
+            <Setter Property="BorderThickness" Value="0,0,0,3" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,0,10,0" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#1E293B" />
+                                <Setter Property="BorderBrush" Value="#E2E8F0" />
+                            </Trigger>
+                            <Trigger Property="Tag" Value="Selected">
+                                <Setter Property="Foreground" Value="#0263E0" />
+                                <Setter Property="BorderBrush" Value="#0263E0" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Consistent ComboBox Style -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Height" Value="38" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#1E293B" />
+            <Setter Property="BorderBrush" Value="#CBD5E1" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton" 
+                                        BorderBrush="{TemplateBinding BorderBrush}" 
+                                        BorderThickness="{TemplateBinding BorderThickness}" 
+                                        Background="{TemplateBinding Background}" 
+                                        Grid.Column="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
+                                        Focusable="false"
+                                        ClickMode="Press">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="Border" CornerRadius="8" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                            <Path x:Name="Arrow" Fill="#64748B" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Data="M0,0 L5,5 L10,0 Z" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="#F8FAFC" />
+                                                <Setter TargetName="Border" Property="BorderBrush" Value="#94A3B8" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="12,3,31,3" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
+                                <Grid x:Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder" Background="White" BorderThickness="1" CornerRadius="8" BorderBrush="#E2E8F0" Margin="0,2,0,0">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.1" />
+                                        </Border.Effect>
+                                    </Border>
+                                    <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /> <!-- Title -->
+            <RowDefinition Height="Auto" /> <!-- Tabs -->
+            <RowDefinition Height="*" />    <!-- Content -->
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Calibration" FontSize="28" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,24" />
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button Content="Regular calibration" Style="{StaticResource TabButtonStyle}" Tag="Selected" Name="BtnRegularCalib" Click="TabButton_Click" />
+            <Button Content="New Edition Calibration" Style="{StaticResource TabButtonStyle}" Name="BtnNewEditionCalib" Click="TabButton_Click" />
+            <Button Content="Reintroduction" Style="{StaticResource TabButtonStyle}" Name="BtnReintroduction" Click="TabButton_Click" />
+            <Button Content="Temp Issuance" Style="{StaticResource TabButtonStyle}" Name="BtnTempIssuance" Click="TabButton_Click" />
+            <Button Content="Calibration Master" Style="{StaticResource TabButtonStyle}" Name="BtnCalibrationMaster" Click="TabButton_Click" />
+            <Button Content="NG List" Style="{StaticResource TabButtonStyle}" Name="BtnNGList" Click="TabButton_Click" />
+            <Button Content="Test" Style="{StaticResource TabButtonStyle}" Name="BtnTest" Click="TabButton_Click" />
+        </StackPanel>
+
+        <!-- Content Area -->
+        <Border Grid.Row="2" Background="White" CornerRadius="0,12,12,12" BorderBrush="#E2E8F0" BorderThickness="1" SnapsToDevicePixels="True">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.03" />
+            </Border.Effect>
+            <Grid x:Name="CalibrationContentArea" Margin="20">
+                <!-- Regular Calibration Tab View -->
+                <Grid x:Name="RegularCalibTabView" Visibility="Visible">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" /> <!-- Sub Tabs -->
+                        <RowDefinition Height="*" />    <!-- Content Area -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Sub Navigation -->
+                    <Border Grid.Row="0" BorderBrush="#F1F5F9" BorderThickness="0,0,0,1" Margin="0,0,0,20">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Calibration Status" Style="{StaticResource SubTabButtonStyle}" Tag="Selected" Name="BtnStatusTab" Click="SubTabButton_Click" />
+                            <Button Content="Instrument Calibration" Style="{StaticResource SubTabButtonStyle}" Name="BtnInstrumentTab" Click="SubTabButton_Click" />
+                            <Button Content="Gauge Calibration" Style="{StaticResource SubTabButtonStyle}" Name="BtnGaugeTab" Click="SubTabButton_Click" />
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="1">
+                        <!-- Calibration Status Content -->
+                        <Grid x:Name="StatusTabView" Visibility="Visible">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                    <TextBlock Text="Cycle:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#64748B" />
+                                    <ComboBox x:Name="ComboCycle" Width="280" SelectionChanged="ComboCycle_SelectionChanged" VerticalAlignment="Center" />
+                                    <Button x:Name="BtnImportRegularCalib" Content="Import Data" Style="{StaticResource ActionButtonStyle}" Margin="10,0,0,0" Height="34" Width="100" Click="BtnImportRegularCalib_Click" IsEnabled="False" />
+                                </StackPanel>
+                                
+                                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Content="View Result" Style="{StaticResource PrimaryButtonStyle}" Width="120" Height="34" x:Name="BtnViewResult" Click="BtnViewResult_Click" Visibility="Collapsed" />
+                            </DockPanel>
+
+                            <Border Grid.Row="1" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                                <DataGrid x:Name="RegularCalibDataGrid" Style="{StaticResource CalibrationDataGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Instrument Name" Binding="{Binding instrument_name}" Width="200" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTemplateColumn Header="Control No" Width="150">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="{Binding control_no}" 
+                                                            Click="ControlNo_Click"
+                                                            Style="{StaticResource TextLinkButtonStyle}" 
+                                                            Margin="16,0" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Status" Binding="{Binding status}" Width="120" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated" Binding="{Binding is_calibrated}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated Date" Binding="{Binding calibrated_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Due Date" Binding="{Binding due_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="180" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Status" Binding="{Binding calibration_status}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+                        </Grid>
+
+                        <!-- Instrument Calibration Content -->
+                        <Grid x:Name="InstrumentTabView" Visibility="Collapsed">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="InstrumentCardsControl" ItemTemplate="{StaticResource CalibrationCardTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Margin="5" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                        
+                        <!-- Gauge Calibration Content -->
+                        <Grid x:Name="GaugeTabView" Visibility="Collapsed">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="GaugeCardsControl" ItemTemplate="{StaticResource CalibrationCardTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Margin="5" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+
+                        <!-- Card Detail View Content (Hidden by default) -->
+                        <Grid x:Name="CardDetailTabView" Visibility="Collapsed">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                    <Button x:Name="BtnBackToCards" Click="BtnBackToCards_Click" Style="{StaticResource ActionButtonStyle}" Width="40" Height="34" Margin="0,0,15,0" Padding="0">
+                                        <TextBlock Text="←" FontWeight="Bold" FontSize="20" Margin="0,-2,0,0" />
+                                    </Button>
+                                    <TextBlock x:Name="TxtDetailTitle" Text="Instrument Details" FontWeight="Bold" FontSize="18" Foreground="#1E293B" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <Button DockPanel.Dock="Right" 
+                                        Content="View Result" 
+                                        Style="{StaticResource PrimaryButtonStyle}" 
+                                        Width="120"
+                                        Height="34"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right"
+                                        x:Name="BtnViewGroupResult"
+                                        Click="BtnViewGroupResult_Click"/>
+                            </DockPanel>
+
+                            <Border Grid.Row="1" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                                <DataGrid x:Name="DetailCalibDataGrid" Style="{StaticResource CalibrationDataGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Instrument Name" Binding="{Binding instrument_name}" Width="200" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTemplateColumn Header="Control No" Width="150">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="{Binding control_no}" 
+                                                            Click="ControlNo_Click"
+                                                            Style="{StaticResource TextLinkButtonStyle}" 
+                                                            Margin="16,0" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Status" Binding="{Binding status}" Width="120" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated" Binding="{Binding is_calibrated}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated Date" Binding="{Binding calibrated_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Due Date" Binding="{Binding due_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="180" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Status" Binding="{Binding calibration_status}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <!-- New Edition Calibration Tab View -->
+                <Grid x:Name="NewEditionCalibTabView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" BorderBrush="#F1F5F9" BorderThickness="0,0,0,1" Margin="0,0,0,20">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Calibration Status" Style="{StaticResource SubTabButtonStyle}" Tag="Selected" Name="BtnNewEditionStatusTab" Click="SubTabButton_Click" />
+                            <Button Content="Instrument Calibration" Style="{StaticResource SubTabButtonStyle}" Name="BtnNewEditionInstrumentTab" Click="SubTabButton_Click" />
+                            <Button Content="Gauge Calibration" Style="{StaticResource SubTabButtonStyle}" Name="BtnNewEditionGaugeTab" Click="SubTabButton_Click" />
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="1">
+                        <Grid x:Name="NewEditionStatusTabView" Visibility="Visible">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                    <TextBlock Text="Cycle:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#64748B" />
+                                    <ComboBox x:Name="ComboNewEditionCycle" Width="280" SelectionChanged="ComboCycle_SelectionChanged" VerticalAlignment="Center" />
+                                    <TextBlock Text="Request No:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="24,0,10,0" Foreground="#64748B" />
+                                    <ComboBox x:Name="ComboNewEditionRequestFilter" Width="200" VerticalAlignment="Center" SelectionChanged="ComboNewEditionRequestFilter_SelectionChanged" />
+                                </StackPanel>
+                                
+                                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Content="View Result" Style="{StaticResource PrimaryButtonStyle}" Width="120" Height="34" x:Name="BtnNewEditionViewResult" Click="BtnViewResult_Click" Visibility="Collapsed" />
+                            </DockPanel>
+
+                            <Border Grid.Row="1" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                                <DataGrid x:Name="NewEditionCalibDataGrid" Style="{StaticResource CalibrationDataGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Instrument Name" Binding="{Binding instrument_name}" Width="200" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTemplateColumn Header="Control No" Width="150">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="{Binding control_no}" 
+                                                            Click="ControlNo_Click"
+                                                            Style="{StaticResource TextLinkButtonStyle}" 
+                                                            Margin="16,0" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Request No" Binding="{Binding RequestNo}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Status" Binding="{Binding status}" Width="120" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated" Binding="{Binding is_calibrated}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated Date" Binding="{Binding calibrated_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Due Date" Binding="{Binding due_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="180" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Status" Binding="{Binding calibration_status}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+                        </Grid>
+
+                        <Grid x:Name="NewEditionInstrumentTabView" Visibility="Collapsed">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="NewEditionInstrumentCardsControl" ItemTemplate="{StaticResource CalibrationCardTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Margin="5" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                        
+                        <Grid x:Name="NewEditionGaugeTabView" Visibility="Collapsed">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="NewEditionGaugeCardsControl" ItemTemplate="{StaticResource CalibrationCardTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Margin="5" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+
+                        <Grid x:Name="NewEditionCardDetailTabView" Visibility="Collapsed">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                    <Button x:Name="BtnNewEditionBackToCards" Click="BtnBackToCards_Click" Style="{StaticResource ActionButtonStyle}" Width="40" Height="34" Margin="0,0,15,0" Padding="0">
+                                        <TextBlock Text="←" FontWeight="Bold" FontSize="20" Margin="0,-2,0,0" />
+                                    </Button>
+                                    <TextBlock x:Name="TxtNewEditionDetailTitle" Text="Instrument Details" FontWeight="Bold" FontSize="18" Foreground="#1E293B" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <Button DockPanel.Dock="Right" 
+                                        Content="View Result" 
+                                        Style="{StaticResource PrimaryButtonStyle}" 
+                                        Width="120"
+                                        Height="34"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right"
+                                        x:Name="BtnNewEditionViewGroupResult"
+                                        Click="BtnViewGroupResult_Click"/>
+                            </DockPanel>
+
+                            <Border Grid.Row="1" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                                <DataGrid x:Name="NewEditionDetailCalibDataGrid" Style="{StaticResource CalibrationDataGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Instrument Name" Binding="{Binding instrument_name}" Width="200" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTemplateColumn Header="Control No" Width="150">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="{Binding control_no}" 
+                                                            Click="ControlNo_Click"
+                                                            Style="{StaticResource TextLinkButtonStyle}" 
+                                                            Margin="16,0" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Request No" Binding="{Binding RequestNo}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Status" Binding="{Binding status}" Width="120" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated" Binding="{Binding is_calibrated}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated Date" Binding="{Binding calibrated_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Due Date" Binding="{Binding due_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="180" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Status" Binding="{Binding calibration_status}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <!-- Reintroduction Tab View -->
+                <Grid x:Name="ReintroTabView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" BorderBrush="#F1F5F9" BorderThickness="0,0,0,1" Margin="0,0,0,20">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Calibration Status" Style="{StaticResource SubTabButtonStyle}" Tag="Selected" Name="BtnReintroStatusTab" Click="SubTabButton_Click" />
+                            <Button Content="Instrument Calibration" Style="{StaticResource SubTabButtonStyle}" Name="BtnReintroInstrumentTab" Click="SubTabButton_Click" />
+                            <Button Content="Gauge Calibration" Style="{StaticResource SubTabButtonStyle}" Name="BtnReintroGaugeTab" Click="SubTabButton_Click" />
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="1">
+                        <Grid x:Name="ReintroStatusTabView" Visibility="Visible">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                    <TextBlock Text="Cycle:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#64748B" />
+                                    <ComboBox x:Name="ComboReintroCycle" Width="280" SelectionChanged="ComboCycle_SelectionChanged" VerticalAlignment="Center" />
+                                </StackPanel>
+                                
+                                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Content="View Result" Style="{StaticResource PrimaryButtonStyle}" Width="120" Height="34" x:Name="BtnReintroViewResult" Click="BtnViewResult_Click" Visibility="Collapsed" />
+                            </DockPanel>
+
+                            <Border Grid.Row="1" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                                <DataGrid x:Name="ReintroCalibDataGrid" Style="{StaticResource CalibrationDataGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Instrument Name" Binding="{Binding instrument_name}" Width="200" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTemplateColumn Header="Control No" Width="150">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="{Binding control_no}" 
+                                                            Click="ControlNo_Click"
+                                                            Style="{StaticResource TextLinkButtonStyle}" 
+                                                            Margin="16,0" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Status" Binding="{Binding status}" Width="120" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated" Binding="{Binding is_calibrated}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated Date" Binding="{Binding calibrated_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Due Date" Binding="{Binding due_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="180" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Status" Binding="{Binding calibration_status}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+                        </Grid>
+
+                        <Grid x:Name="ReintroInstrumentTabView" Visibility="Collapsed">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="ReintroInstrumentCardsControl" ItemTemplate="{StaticResource CalibrationCardTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Margin="5" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                        
+                        <Grid x:Name="ReintroGaugeTabView" Visibility="Collapsed">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="ReintroGaugeCardsControl" ItemTemplate="{StaticResource CalibrationCardTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Margin="5" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+
+                        <Grid x:Name="ReintroCardDetailTabView" Visibility="Collapsed">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                    <Button x:Name="BtnReintroBackToCards" Click="BtnBackToCards_Click" Style="{StaticResource ActionButtonStyle}" Width="40" Height="34" Margin="0,0,15,0" Padding="0">
+                                        <TextBlock Text="←" FontWeight="Bold" FontSize="20" Margin="0,-2,0,0" />
+                                    </Button>
+                                    <TextBlock x:Name="TxtReintroDetailTitle" Text="Instrument Details" FontWeight="Bold" FontSize="18" Foreground="#1E293B" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <Button DockPanel.Dock="Right" 
+                                        Content="View Result" 
+                                        Style="{StaticResource PrimaryButtonStyle}" 
+                                        Width="120"
+                                        Height="34"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right"
+                                        x:Name="BtnReintroViewGroupResult"
+                                        Click="BtnViewGroupResult_Click"/>
+                            </DockPanel>
+
+                            <Border Grid.Row="1" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                                <DataGrid x:Name="ReintroDetailCalibDataGrid" Style="{StaticResource CalibrationDataGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Instrument Name" Binding="{Binding instrument_name}" Width="200" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTemplateColumn Header="Control No" Width="150">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="{Binding control_no}" 
+                                                            Click="ControlNo_Click"
+                                                            Style="{StaticResource TextLinkButtonStyle}" 
+                                                            Margin="16,0" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Status" Binding="{Binding status}" Width="120" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated" Binding="{Binding is_calibrated}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated Date" Binding="{Binding calibrated_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Due Date" Binding="{Binding due_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="180" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Status" Binding="{Binding calibration_status}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <!-- Temp Issuance Tab View -->
+                <Grid x:Name="TempIssuanceTabView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" BorderBrush="#F1F5F9" BorderThickness="0,0,0,1" Margin="0,0,0,20">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Calibration Status" Style="{StaticResource SubTabButtonStyle}" Tag="Selected" Name="BtnTempIssuanceStatusTab" Click="SubTabButton_Click" />
+                            <Button Content="Instrument Calibration" Style="{StaticResource SubTabButtonStyle}" Name="BtnTempIssuanceInstrumentTab" Click="SubTabButton_Click" />
+                            <Button Content="Gauge Calibration" Style="{StaticResource SubTabButtonStyle}" Name="BtnTempIssuanceGaugeTab" Click="SubTabButton_Click" />
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="1">
+                        <Grid x:Name="TempIssuanceStatusTabView" Visibility="Visible">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                    <TextBlock Text="Cycle:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#64748B" />
+                                    <ComboBox x:Name="ComboTempIssuanceCycle" Width="280" SelectionChanged="ComboCycle_SelectionChanged" VerticalAlignment="Center" />
+                                </StackPanel>
+                                
+                                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Content="View Result" Style="{StaticResource PrimaryButtonStyle}" Width="120" Height="34" x:Name="BtnTempIssuanceViewResult" Click="BtnViewResult_Click" Visibility="Collapsed" />
+                            </DockPanel>
+
+                            <Border Grid.Row="1" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                                <DataGrid x:Name="TempIssuanceCalibDataGrid" Style="{StaticResource CalibrationDataGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Instrument Name" Binding="{Binding instrument_name}" Width="200" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTemplateColumn Header="Control No" Width="150">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="{Binding control_no}" 
+                                                            Click="ControlNo_Click"
+                                                            Style="{StaticResource TextLinkButtonStyle}" 
+                                                            Margin="16,0" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Status" Binding="{Binding status}" Width="120" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated" Binding="{Binding is_calibrated}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated Date" Binding="{Binding calibrated_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Due Date" Binding="{Binding due_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="180" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Status" Binding="{Binding calibration_status}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+                        </Grid>
+
+                        <Grid x:Name="TempIssuanceInstrumentTabView" Visibility="Collapsed">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="TempIssuanceInstrumentCardsControl" ItemTemplate="{StaticResource CalibrationCardTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Margin="5" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                        
+                        <Grid x:Name="TempIssuanceGaugeTabView" Visibility="Collapsed">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="TempIssuanceGaugeCardsControl" ItemTemplate="{StaticResource CalibrationCardTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Margin="5" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+
+                        <Grid x:Name="TempIssuanceCardDetailTabView" Visibility="Collapsed">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                    <Button x:Name="BtnTempIssuanceBackToCards" Click="BtnBackToCards_Click" Style="{StaticResource ActionButtonStyle}" Width="40" Height="34" Margin="0,0,15,0" Padding="0">
+                                        <TextBlock Text="←" FontWeight="Bold" FontSize="20" Margin="0,-2,0,0" />
+                                    </Button>
+                                    <TextBlock x:Name="TxtTempIssuanceDetailTitle" Text="Instrument Details" FontWeight="Bold" FontSize="18" Foreground="#1E293B" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <Button DockPanel.Dock="Right" 
+                                        Content="View Result" 
+                                        Style="{StaticResource PrimaryButtonStyle}" 
+                                        Width="120"
+                                        Height="34"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right"
+                                        x:Name="BtnTempIssuanceViewGroupResult"
+                                        Click="BtnViewGroupResult_Click"/>
+                            </DockPanel>
+
+                            <Border Grid.Row="1" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                                <DataGrid x:Name="TempIssuanceDetailCalibDataGrid" Style="{StaticResource CalibrationDataGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Instrument Name" Binding="{Binding instrument_name}" Width="200" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTemplateColumn Header="Control No" Width="150">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="{Binding control_no}" 
+                                                            Click="ControlNo_Click"
+                                                            Style="{StaticResource TextLinkButtonStyle}" 
+                                                            Margin="16,0" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Status" Binding="{Binding status}" Width="120" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated" Binding="{Binding is_calibrated}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated Date" Binding="{Binding calibrated_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Due Date" Binding="{Binding due_date, StringFormat=\{0:dd/MM/yyyy\}}" Width="180" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibration Status" Binding="{Binding calibration_status}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <!-- Calibration Master Tab View -->
+                <Grid x:Name="CalibrationMasterTabView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" /> <!-- Sub Tabs -->
+                        <RowDefinition Height="*" />    <!-- Content Area -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Sub Navigation -->
+                    <Border Grid.Row="0" BorderBrush="#F1F5F9" BorderThickness="0,0,0,1" Margin="0,0,0,20">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Calibration Master Details" Style="{StaticResource SubTabButtonStyle}" Tag="Selected" Name="BtnMasterDetails" Click="MasterSubTabButton_Click" />
+                            <Button Content="Calibration Master Database" Style="{StaticResource SubTabButtonStyle}" Name="BtnMasterDatabase" Click="MasterSubTabButton_Click" />
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="1">
+                        <!-- Calibration Master Details Content -->
+                        <Grid x:Name="MasterDetailsView" Visibility="Visible">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Row="0" Margin="0,0,0,20">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Year:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#64748B" />
+                                    <ComboBox x:Name="ComboYear" Width="150" SelectionChanged="ComboYear_SelectionChanged" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Row="1" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                                <DataGrid x:Name="MasterDetailsDataGrid" Style="{StaticResource CalibrationDataGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="60" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="200" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Least Count" Binding="{Binding LeastCount}" Width="120" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Master Uncertainty" Binding="{Binding MasterUncertainty, StringFormat=\{0:0.##########\}}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Calibrated Date" Binding="{Binding CalDate, StringFormat=\{0:dd/MM/yyyy\}}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate, StringFormat=\{0:dd/MM/yyyy\}}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                        <DataGridTemplateColumn Header="Document" Width="150">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="View Document" 
+                                                            Click="BtnViewMasterDocument_Click"
+                                                            Style="{StaticResource TextLinkButtonStyle}" 
+                                                            Margin="16,0" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+                        </Grid>
+
+                        <!-- Calibration Master Database Content -->
+                        <Grid x:Name="MasterDatabaseView" Visibility="Collapsed">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="CalibrationMasterCardsControl" ItemTemplate="{StaticResource MasterCardTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Margin="5" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <!-- Test Tab View (Existing Content) -->
+                <Grid x:Name="TestTabView" Visibility="Collapsed">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock FontSize="18" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,20" HorizontalAlignment="Center">Calibration Tool Selection</TextBlock>
+                        <Border Background="White" CornerRadius="12" Padding="25" BorderBrush="#E2E8F0" BorderThickness="1">
+                            <StackPanel Width="650">
+                                <Border BorderBrush="#F1F5F9" BorderThickness="0,0,0,1" Margin="0,0,0,15">
+                                    <UniformGrid Columns="2">
+                                        <Button Content="Instruments" Style="{StaticResource SubTabButtonStyle}" Tag="Selected" x:Name="BtnTestInstruments" Click="TestTabSelector_Click" HorizontalAlignment="Stretch" />
+                                        <Button Content="Gauges" Style="{StaticResource SubTabButtonStyle}" x:Name="BtnTestGauges" Click="TestTabSelector_Click" HorizontalAlignment="Stretch" />
+                                    </UniformGrid>
+                                </Border>
+
+                                <ScrollViewer Height="450" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <Grid>
+                                        <!-- Instruments Panel -->
+                                        <StackPanel x:Name="TestInstrumentsPanel" Visibility="Visible" Margin="0,0,10,0">
+                                            <UniformGrid Columns="2">
+                                                <!-- Vernier Calipers -->
+                                                <StackPanel Margin="10">
+                                                    <TextBlock Text="Vernier Calipers" FontSize="14" FontWeight="Bold" Foreground="#475569" Margin="0,0,0,10" />
+                                                    <Button Margin="0,4" Click="Button_Vernier300_Click" Style="{StaticResource PrimaryButtonStyle}" Height="38">
+                                                        <TextBlock Text="Vernier Caliper 300mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                    </Button>
+                                                    <Button Margin="0,4" Click="Button_Vernier600_Click" Style="{StaticResource PrimaryButtonStyle}" Height="38">
+                                                        <TextBlock Text="Vernier Caliper 600mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                    </Button>
+                                                    <Button Margin="0,4" Click="Button_VernierLowForce_Click" Style="{StaticResource PrimaryButtonStyle}" Height="38">
+                                                        <TextBlock Text="Vernier Caliper Low Force" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                    </Button>
+                                                    <Button Margin="0,4" Click="Button_DepthVernier_Click" Style="{StaticResource PrimaryButtonStyle}" Height="38">
+                                                        <TextBlock Text="Depth Vernier Caliper" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                    </Button>
+                                                    <Button Margin="0,4" Click="Button_Dialtestindicator100_Click" Style="{StaticResource PrimaryButtonStyle}" Height="38">
+                                                        <TextBlock Text="Dialtestindicator100" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                    </Button>
+                                                </StackPanel>
+
+                                                <!-- Micrometers (Thread/Point/Inside) -->
+                                                <StackPanel Margin="10">
+                                                    <TextBlock Text="Micrometers" FontSize="14" FontWeight="Bold" Foreground="#475569" Margin="0,0,0,10" />
+                                                    <UniformGrid Columns="2">
+                                                        <Button Margin="2" Click="Button_TPM25_Click" Style="{StaticResource ActionButtonStyle}" Height="38">
+                                                            <TextBlock Text="Thread Pitch Micrometer 25mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="9.5" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_TPM50_Click" Style="{StaticResource ActionButtonStyle}" Height="38">
+                                                            <TextBlock Text="Thread Pitch Micrometer 50mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="9.5" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_TPM70_Click" Style="{StaticResource ActionButtonStyle}" Height="38">
+                                                            <TextBlock Text="Thread Pitch Micrometer 70mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="9.5" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_TPM100_Click" Style="{StaticResource ActionButtonStyle}" Height="38">
+                                                            <TextBlock Text="Thread Pitch Micrometer 100mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="9.5" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_Point25_Click" Style="{StaticResource ActionButtonStyle}" Height="38">
+                                                            <TextBlock Text="Point Micrometer 25mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="10" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_Point50_Click" Style="{StaticResource ActionButtonStyle}" Height="38">
+                                                            <TextBlock Text="Point Micrometer 50mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="10" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_Inside25_Click" Style="{StaticResource ActionButtonStyle}" Height="38">
+                                                            <TextBlock Text="Inside Micrometer 25mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="10" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_Inside50_Click" Style="{StaticResource ActionButtonStyle}" Height="38">
+                                                            <TextBlock Text="Inside Micrometer 50mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="10" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_Groove25_Click" Style="{StaticResource ActionButtonStyle}" Height="38">
+                                                            <TextBlock Text="Groove Micrometer 25mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="10" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_Groove50_Click" Style="{StaticResource ActionButtonStyle}" Height="38">
+                                                            <TextBlock Text="Groove Micrometer 50mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="10" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_Geartooth50_Click" Style="{StaticResource ActionButtonStyle}" Height="38">
+                                                            <TextBlock Text="Gear Tooth Micrometer 50mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="9.5" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_ExtMic100_Click" Style="{StaticResource ActionButtonStyle}" Height="38">
+                                                            <TextBlock Text="External Micrometer 100mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="9.5" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_DiscMic_Click" Style="{StaticResource ActionButtonStyle}" Height="38" Background="#EFF6FF" BorderBrush="#BFDBFE" Foreground="#1E40AF">
+                                                            <TextBlock Text="Disc Micrometer 75mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="10" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_DepthMic_Click" Style="{StaticResource ActionButtonStyle}" Height="38" Background="#F0FDF4" BorderBrush="#BBF7D0" Foreground="#166534">
+                                                            <TextBlock Text="Depth Micrometer 150mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="10" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_BladeMic_Click" Style="{StaticResource ActionButtonStyle}" Height="38" Background="#FFF1F2" BorderBrush="#FECDD3" Foreground="#9F1239">
+                                                            <TextBlock Text="Blade Micrometer 75mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="10" />
+                                                        </Button>
+                                                        <Button Margin="2" Click="Button_BoreGauge_Click" Style="{StaticResource ActionButtonStyle}" Height="38" Background="#F5F3FF" BorderBrush="#DDD6FE" Foreground="#5B21B6">
+                                                            <TextBlock Text="Bore Gauge 3" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                        </Button>
+                                                    </UniformGrid>
+                                                </StackPanel>
+                                            </UniformGrid>
+
+                                            <!-- Specialized Instruments -->
+                                            <TextBlock Text="Specialized Tools" FontSize="14" FontWeight="Bold" Foreground="#475569" Margin="10,15,0,10" />
+                                            <UniformGrid Columns="2" Margin="5,0">
+                                                <Button Click="Button_HeightGauge600_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#EFF6FF" Foreground="#1E40AF" BorderBrush="#BFDBFE">
+                                                    <TextBlock Text="Height Gauge 600mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                </Button>
+                                                <Button Click="Button_Passameter60_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#F5F3FF" Foreground="#5B21B6" BorderBrush="#DDD6FE">
+                                                    <TextBlock Text="Passameter 60mm" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                </Button>
+                                                <Button Click="Button_DialGuage100_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#FFFBEB" Foreground="#92400E" BorderBrush="#FEF3C7">
+                                                    <TextBlock Text="DialGuage 100" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                </Button>
+                                            </UniformGrid>
+                                        </StackPanel>
+
+                                        <!-- Gauges Panel -->
+                                        <StackPanel x:Name="TestGaugesPanel" Visibility="Collapsed" Margin="0,0,10,0">
+                                            <TextBlock Text="Gauge Calibration" FontSize="14" FontWeight="Bold" Foreground="#475569" Margin="10,10,0,10" />
+                                            <UniformGrid Columns="2" Margin="5,0">
+                                                <Button Click="Button_HeightMaster_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#F0FDF4" Foreground="#166534" BorderBrush="#BBF7D0">
+                                                    <TextBlock Text="Height Master" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                </Button>
+                                                <Button Click="Button_KeyGrooveGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#FFF1F2" Foreground="#9F1239" BorderBrush="#FECDD3">
+                                                    <TextBlock Text="Key Groove Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                </Button>
+                                                <Button Click="Button_PlainPlugGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#F0FDF4" Foreground="#166534" BorderBrush="#BBF7D0">
+                                                    <TextBlock Text="Plain Plug Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                </Button>
+                                                <Button Click="Button_PlainRingGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#EFF6FF" Foreground="#1E40AF" BorderBrush="#BFDBFE">
+                                                    <TextBlock Text="Plain Ring Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                </Button>
+                                                <Button Click="Button_SnapGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#FFFBEB" Foreground="#92400E" BorderBrush="#FEF3C7">
+                                                    <TextBlock Text="Snap Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                </Button>
+                                                <Button Click="Button_SpecialHeightGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#F5F3FF" Foreground="#5B21B6" BorderBrush="#DDD6FE">
+                                                    <TextBlock Text="Special Height Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                </Button>
+                                                <Button Click="Button_SplineRingGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#F0FDF4" Foreground="#166534" BorderBrush="#BBF7D0">
+                                                    <TextBlock Text="Spline Ring Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                </Button>
+                                                <Button Click="Button_StraightPlugGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#FFFBEB" Foreground="#92400E" BorderBrush="#FEF3C7">
+                                                    <TextBlock Text="Straight Plug Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                </Button>
+                                                 <Button Click="Button_ThreadRingGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#EFF6FF" Foreground="#1E40AF" BorderBrush="#BFDBFE">
+                                                     <TextBlock Text="Thread Ring Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                 </Button>
+                                                 <Button Click="Button_ThreadPlugGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#F5F3FF" Foreground="#5B21B6" BorderBrush="#DDD6FE">
+                                                     <TextBlock Text="Thread Plug Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                 </Button>
+                                                 <Button Click="Button_TaperPlugGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#FFFBEB" Foreground="#92400E" BorderBrush="#FEF3C7">
+                                                     <TextBlock Text="Taper Plug Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                 </Button>
+                                                 <Button Click="Button_TaperRingGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#EFF6FF" Foreground="#1E40AF" BorderBrush="#BFDBFE">
+                                                     <TextBlock Text="Taper Ring Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                 </Button>
+                                                 <Button Click="Button_FeelerGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#F0FDF4" Foreground="#166534" BorderBrush="#BBF7D0">
+                                                     <TextBlock Text="Feeler Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                 </Button>
+                                                 <Button Click="Button_RadiusGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#FFF1F2" Foreground="#9F1239" BorderBrush="#FECDD3">
+                                                     <TextBlock Text="Radius Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                 </Button>
+                                                  <Button Click="Button_ThreadPitchGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#F5F3FF" Foreground="#5B21B6" BorderBrush="#DDD6FE">
+                                                      <TextBlock Text="Thread Pitch Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                  </Button>
+                                                  <Button Click="Button_SpecialDepthGauge_Click" Style="{StaticResource ActionButtonStyle}" Margin="5" Height="42" Background="#F0FDF4" Foreground="#166534" BorderBrush="#BBF7D0">
+                                                      <TextBlock Text="Special Depth Gauge" TextWrapping="Wrap" TextAlignment="Center" FontSize="12" />
+                                                  </Button>
+                                            </UniformGrid>
+                                            <TextBlock Text="* Standard plug, ring, and thread gauges are calibrated directly from the 'Status' tab by clicking their Control Number." FontSize="11" Foreground="#94A3B8" FontStyle="Italic" HorizontalAlignment="Center" Margin="0,15,0,0" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="450"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </ScrollViewer>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+                <!-- NG List Tab View -->
+                <Grid x:Name="NGListTabView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                        <TextBlock Text="NG List" FontWeight="Bold" FontSize="18" Foreground="#1E293B" VerticalAlignment="Center" />
+                    </DockPanel>
+
+                    <Border Grid.Row="1" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                        <DataGrid x:Name="NGListDataGrid" Style="{StaticResource CalibrationDataGridStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Instrument Name" Binding="{Binding instrument_name}" Width="200" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                <DataGridTextColumn Header="Control No" Binding="{Binding control_no}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                <DataGridTextColumn Header="Department" Binding="{Binding Department}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                <DataGridTextColumn Header="Calibrated Date" Binding="{Binding calibrated_date, StringFormat={}{0:dd-MM-yyyy}}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                <DataGridTextColumn Header="Due Date" Binding="{Binding due_date, StringFormat={}{0:dd-MM-yyyy}}" Width="150" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                <DataGridTextColumn Header="Status" Binding="{Binding status}" Width="100" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                                <DataGridTextColumn Header="Reason" Binding="{Binding reason}" Width="*" ElementStyle="{StaticResource DataGridCellTextBlockStyle}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

@@ -1,0 +1,99 @@
+<Window x:Class="TypeSelectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Select Instrument / Gauge Databases" Height="600" Width="800"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ResizeMode="NoResize"
+        Background="#F1F5F9">
+    <Window.Resources>
+        <Style x:Key="SelectionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#475569" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="12,6" />
+            <Setter Property="BorderBrush" Value="#E2E8F0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="8" x:Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F8FAFC" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#CBD5E1" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Select Instrument / Gauge Databases" FontSize="18" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,15"/>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Instruments Column -->
+            <StackPanel Margin="0,0,10,0">
+                <DockPanel LastChildFill="False" Margin="0,0,0,10">
+                    <TextBlock Text="Instruments" FontSize="16" FontWeight="SemiBold" Foreground="#334155" VerticalAlignment="Center" />
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button Content="All" Style="{StaticResource SelectionButtonStyle}" Click="BtnSelectAllInst_Click" Margin="0,0,8,0"/>
+                        <Button Content="None" Style="{StaticResource SelectionButtonStyle}" Click="BtnClearAllInst_Click" />
+                    </StackPanel>
+                </DockPanel>
+                <Border Background="White" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1" Height="400">
+                    <ListBox x:Name="InstListBox" BorderThickness="0" Padding="5">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" Margin="5" FontSize="12" Foreground="#475569" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+            </StackPanel>
+
+            <!-- Gauges Column -->
+            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                <DockPanel LastChildFill="False" Margin="0,0,0,10">
+                    <TextBlock Text="Gauges" FontSize="16" FontWeight="SemiBold" Foreground="#334155" VerticalAlignment="Center" />
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button Content="All" Style="{StaticResource SelectionButtonStyle}" Click="BtnSelectAllGauge_Click" Margin="0,0,8,0"/>
+                        <Button Content="None" Style="{StaticResource SelectionButtonStyle}" Click="BtnClearAllGauge_Click" />
+                    </StackPanel>
+                </DockPanel>
+                <Border Background="White" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1" Height="400">
+                    <ListBox x:Name="GaugeListBox" BorderThickness="0" Padding="5">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" Margin="5" FontSize="12" Foreground="#475569" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button x:Name="BtnCancel" Content="Cancel" Style="{StaticResource ActionButtonStyle}" Click="BtnCancel_Click" Width="100" Margin="0,0,10,0"/>
+            <Button x:Name="BtnApply" Content="Apply" Style="{StaticResource PrimaryButtonStyle}" Click="BtnApply_Click" Width="120"/>
+        </StackPanel>
+    </Grid>
+</Window>
